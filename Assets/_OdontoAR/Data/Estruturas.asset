@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d7ff77fcd8294ac393651872a0a49c9, type: 3}
+  m_Name: Estruturas
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.StructureCatalog
+  entries:
+  - key: 11
+    displayName: Incisivo central superior direito
+  - key: 12
+    displayName: Incisivo lateral superior direito
+  - key: 13
+    displayName: Canino superior direito
+  - key: 14
+    displayName: "Primeiro pr\xE9-molar superior direito"
+  - key: 15
+    displayName: "Segundo pr\xE9-molar superior direito"
+  - key: 16
+    displayName: Primeiro molar superior direito
+  - key: 17
+    displayName: Segundo molar superior direito
+  - key: 18
+    displayName: Terceiro molar superior direito
+  - key: 21
+    displayName: Incisivo central superior esquerdo
+  - key: 22
+    displayName: Incisivo lateral superior esquerdo
+  - key: 23
+    displayName: Canino superior esquerdo
+  - key: 24
+    displayName: "Primeiro pr\xE9-molar superior esquerdo"
+  - key: 25
+    displayName: "Segundo pr\xE9-molar superior esquerdo"
+  - key: 26
+    displayName: Primeiro molar superior esquerdo
+  - key: 27
+    displayName: Segundo molar superior esquerdo
+  - key: 28
+    displayName: Terceiro molar superior esquerdo
+  - key: 31
+    displayName: Incisivo central inferior esquerdo
+  - key: 32
+    displayName: Incisivo lateral inferior esquerdo
+  - key: 33
+    displayName: Canino inferior esquerdo
+  - key: 34
+    displayName: "Primeiro pr\xE9-molar inferior esquerdo"
+  - key: 35
+    displayName: "Segundo pr\xE9-molar inferior esquerdo"
+  - key: 36
+    displayName: Primeiro molar inferior esquerdo
+  - key: 37
+    displayName: Segundo molar inferior esquerdo
+  - key: 38
+    displayName: Terceiro molar inferior esquerdo
+  - key: 41
+    displayName: Incisivo central inferior direito
+  - key: 42
+    displayName: Incisivo lateral inferior direito
+  - key: 43
+    displayName: Canino inferior direito
+  - key: 44
+    displayName: "Primeiro pr\xE9-molar inferior direito"
+  - key: 45
+    displayName: "Segundo pr\xE9-molar inferior direito"
+  - key: 46
+    displayName: Primeiro molar inferior direito
+  - key: 47
+    displayName: Segundo molar inferior direito
+  - key: 48
+    displayName: Terceiro molar inferior direito
+  - key: Facial nerve (VII).l
+    displayName: Nervo facial esquerdo (VII)
+  - key: Facial nerve (VII).r
+    displayName: Nervo facial direito (VII)
+  - key: Mandible
+    displayName: "Mand\xEDbula"
+  - key: Maxilla.l
+    displayName: Maxila esquerda
+  - key: Maxilla.r
+    displayName: Maxila direita
+  - key: Motor nucleus of facial nerve.l
+    displayName: "N\xFAcleo motor do nervo facial esquerdo"
+  - key: Motor nucleus of facial nerve.r
+    displayName: "N\xFAcleo motor do nervo facial direito"
+  - key: Vestibular nerve.l
+    displayName: Nervo vestibular esquerdo
+  - key: Vestibular nerve.r
+    displayName: Nervo vestibular direito
+  - key: Vestibulocochlear nerve (VIII).l
+    displayName: Nervo vestibulococlear esquerdo (VIII)
+  - key: Vestibulocochlear nerve (VIII).r
+    displayName: Nervo vestibulococlear direito (VIII)
+  - key: camada:Bone
+    displayName: Osso
+  - key: camada:Crown
+    displayName: Coroa
+  - key: camada:Nerves
+    displayName: Nervos
+  - key: camada:Root
+    displayName: Raiz

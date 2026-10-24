@@ -351,8 +351,14 @@ MonoBehaviour:
   holder: {fileID: 201386220884121204}
   crown: {fileID: 2100000, guid: 1490b25abfdbe4d23ae5e5feecc3eb2f, type: 2}
   crownTranslucent: {fileID: 2100000, guid: f20d4fe1ef6c042ff9f590e7ea83b372, type: 2}
+  crownDimmed: {fileID: 2100000, guid: 5e25c9fd2b57d4fcfb34adf36db067bd, type: 2}
   root: {fileID: 2100000, guid: 0c31e1643fbde4d48b6046486005c07d, type: 2}
   rootTranslucent: {fileID: 2100000, guid: 87516f04c23244bd0a992807db8c2e50, type: 2}
+  rootDimmed: {fileID: 2100000, guid: f9ca3b73d450744d4ab621d13647ce72, type: 2}
+  bone: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  boneDimmed: {fileID: 2100000, guid: a14b7c1b8ac4d4615afcad94296753d2, type: 2}
+  nerve: {fileID: 2100000, guid: 052dcae3042364f8a954a167ffb858cb, type: 2}
+  nerveDimmed: {fileID: 2100000, guid: dd38f0316a28948d3a2ee81f718a2ec5, type: 2}
   hidden: {fileID: 2100000, guid: ccf7f4998e2764ddabb8951969796565, type: 2}
   teeth:
   - {fileID: 233251965430285461}
@@ -383,11 +389,11 @@ MonoBehaviour:
   - {fileID: 4861723697219795833}
   - {fileID: 2850464454353795174}
   - {fileID: 2754244579193975267}
-  bone:
+  boneRenderers:
   - {fileID: 2357368160977128119}
   - {fileID: 2402767960099004488}
   - {fileID: 7439874123366338765}
-  nerves:
+  nerveRenderers:
   - {fileID: 4215090533268754121}
   - {fileID: 8528230801817911074}
   - {fileID: 4684326624678998747}
@@ -451,8 +457,74 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -747792676380524331, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1536755021220447736}
+    - targetCorrespondingSourceObject: {fileID: 5849746267878195770, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1443260509481984195}
+    - targetCorrespondingSourceObject: {fileID: -47949179777203574, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7704055640217329193}
+    - targetCorrespondingSourceObject: {fileID: 2217582205665504718, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6573369012212186134}
+    - targetCorrespondingSourceObject: {fileID: -2146735634703101327, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3335829304780911138}
+    - targetCorrespondingSourceObject: {fileID: 8387392243095612481, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3965333353984113751}
+    - targetCorrespondingSourceObject: {fileID: 8749870906796656597, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7745931168388395252}
+    - targetCorrespondingSourceObject: {fileID: -5129656290529643440, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2912412572872781587}
   m_SourcePrefab: {fileID: 100100000, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+--- !u!1 &10226636992782618 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5129656290529643440, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2912412572872781587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10226636992782618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Vestibular nerve.r
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
+--- !u!1 &2751126106176829572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2217582205665504718, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6573369012212186134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2751126106176829572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Motor nucleus of facial nerve.r
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
 --- !u!23 &4034157210278267160 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -8135843704978678702, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
@@ -473,16 +545,121 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8784706365000460177, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
   m_PrefabInstance: {fileID: 4101541048811148618}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4721550187719398047 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8749870906796656597, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7745931168388395252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4721550187719398047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Vestibulocochlear nerve (VIII).r
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
 --- !u!23 &4970494890575196172 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8939969749282104646, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
   m_PrefabInstance: {fileID: 4101541048811148618}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5169639394835535808 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -47949179777203574, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7704055640217329193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169639394835535808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Motor nucleus of facial nerve.l
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
+--- !u!1 &5516233433393068299 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8387392243095612481, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3965333353984113751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5516233433393068299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Vestibular nerve.l
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
+--- !u!1 &5581322643533010335 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -747792676380524331, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1536755021220447736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5581322643533010335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Facial nerve (VII).l
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
 --- !u!23 &6369217169793756211 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -2265424277116126855, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
   m_PrefabInstance: {fileID: 4101541048811148618}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6547911195369342779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2146735634703101327, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3335829304780911138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6547911195369342779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Vestibulocochlear nerve (VIII).l
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
 --- !u!23 &7176916022621260179 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6589363026073492697, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
@@ -493,6 +670,27 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3435198416718892678, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
   m_PrefabInstance: {fileID: 4101541048811148618}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7621745225477543792 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5849746267878195770, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
+  m_PrefabInstance: {fileID: 4101541048811148618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1443260509481984195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7621745225477543792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Facial nerve (VII).r
+  isTooth: 0
+  submeshFirstTriangle: 00000000i
+  submeshLayers: 03000000i
 --- !u!23 &8528230801817911074 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3552841612512662936, guid: 5db0c3eb715aa4b058dbbef98acea82a, type: 3}
@@ -553,13 +751,97 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -1622622755581162175, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4572928824159462120}
+    - targetCorrespondingSourceObject: {fileID: 846434597833192778, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7919073437764583368}
+    - targetCorrespondingSourceObject: {fileID: 796732499741802486, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2720013929657627708}
+    - targetCorrespondingSourceObject: {fileID: -9135728772407405733, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2448705136455743889}
+    - targetCorrespondingSourceObject: {fileID: 3514563728245029987, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6056730127177459676}
+    - targetCorrespondingSourceObject: {fileID: -2623544558364281851, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1131921502373824013}
+    - targetCorrespondingSourceObject: {fileID: -2669541463101092024, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5527800550657495133}
+    - targetCorrespondingSourceObject: {fileID: 679476887270662921, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1662737689943321055}
+    - targetCorrespondingSourceObject: {fileID: 8607619211585595118, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7673208841313183523}
+    - targetCorrespondingSourceObject: {fileID: -7504399917527950068, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7430634602365403296}
+    - targetCorrespondingSourceObject: {fileID: 7533953310315812423, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3959354157749926051}
+    - targetCorrespondingSourceObject: {fileID: 9147045820026573549, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1188584130217988631}
+    - targetCorrespondingSourceObject: {fileID: 1229138594728261741, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3892592924186460583}
+    - targetCorrespondingSourceObject: {fileID: 8223968018122493861, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6978849371101061985}
   m_SourcePrefab: {fileID: 100100000, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
 --- !u!23 &896032494461336633 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3505936949999639936, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
   m_PrefabInstance: {fileID: 4843392860701712057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1774554845684984508 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2623544558364281851, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1131921502373824013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1774554845684984508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 44
+  isTooth: 1
+  submeshFirstTriangle: 00000000e3020000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &1856839894750925297 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2669541463101092024, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5527800550657495133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856839894750925297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 32
+  isTooth: 1
+  submeshFirstTriangle: 0000000031020000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &2304016506305888572 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6687479219602464645, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
@@ -575,11 +857,95 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7258063672951138015, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
   m_PrefabInstance: {fileID: 4843392860701712057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3047944184575513592 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1622622755581162175, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4572928824159462120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3047944184575513592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 33
+  isTooth: 1
+  submeshFirstTriangle: 0000000070020000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &3106762493367883832 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -1717489792117455231, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
   m_PrefabInstance: {fileID: 4843392860701712057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3151053794981791998 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7533953310315812423, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3959354157749926051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3151053794981791998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 37
+  isTooth: 1
+  submeshFirstTriangle: 0000000020030000i
+  submeshLayers: 0100000000000000i
+--- !u!1 &3537110705382920476 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8223968018122493861, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6978849371101061985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3537110705382920476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 45
+  isTooth: 1
+  submeshFirstTriangle: 00000000c4010000i
+  submeshLayers: 0100000000000000i
+--- !u!1 &3765950695479113815 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8607619211585595118, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7673208841313183523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3765950695479113815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 31
+  isTooth: 1
+  submeshFirstTriangle: 00000000e4010000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &3780470000880971550 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -629979160150920793, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
@@ -590,6 +956,48 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -594329797211802113, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
   m_PrefabInstance: {fileID: 4843392860701712057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4451779167464066132 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9147045820026573549, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1188584130217988631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4451779167464066132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 47
+  isTooth: 1
+  submeshFirstTriangle: 0000000020030000i
+  submeshLayers: 0100000000000000i
+--- !u!1 &4755923460962553314 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -9135728772407405733, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2448705136455743889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755923460962553314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 46
+  isTooth: 1
+  submeshFirstTriangle: 00000000ac030000ba0a0000i
+  submeshLayers: 010000000000000001000000i
 --- !u!23 &4861723697219795833 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 22377073971275200, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
@@ -605,16 +1013,142 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -8785090431240487213, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
   m_PrefabInstance: {fileID: 4843392860701712057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5204401785377628495 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 796732499741802486, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2720013929657627708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5204401785377628495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 36
+  isTooth: 1
+  submeshFirstTriangle: 00000000ac030000ba0a0000i
+  submeshLayers: 010000000000000001000000i
+--- !u!1 &5226449276203920371 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 846434597833192778, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7919073437764583368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5226449276203920371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 43
+  isTooth: 1
+  submeshFirstTriangle: 0000000070020000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &5357819575009476016 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 679476887270662921, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1662737689943321055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5357819575009476016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 42
+  isTooth: 1
+  submeshFirstTriangle: 0000000031020000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &5667760235450818815 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -8245847090074698170, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
   m_PrefabInstance: {fileID: 4843392860701712057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5925038566543058644 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1229138594728261741, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3892592924186460583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5925038566543058644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 35
+  isTooth: 1
+  submeshFirstTriangle: 00000000c4010000i
+  submeshLayers: 0100000000000000i
+--- !u!1 &6119323365033329589 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7504399917527950068, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7430634602365403296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6119323365033329589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 41
+  isTooth: 1
+  submeshFirstTriangle: 00000000e4010000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &7107622265251220204 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2419674279340479573, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
   m_PrefabInstance: {fileID: 4843392860701712057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8354473293143450330 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3514563728245029987, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
+  m_PrefabInstance: {fileID: 4843392860701712057}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6056730127177459676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8354473293143450330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 34
+  isTooth: 1
+  submeshFirstTriangle: 00000000e3020000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &8511499916250151995 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -5392536950889340286, guid: a7e132ef29a244f71ab14427a10f156a, type: 3}
@@ -685,8 +1219,35 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5566914167635786090, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9115457363046465049}
+    - targetCorrespondingSourceObject: {fileID: 5276470554023217839, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8516646061113541530}
   m_SourcePrefab: {fileID: 100100000, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
+--- !u!1 &2314271127938634197 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5566914167635786090, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
+  m_PrefabInstance: {fileID: 7880269812557719743}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9115457363046465049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2314271127938634197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Maxilla.l
+  isTooth: 0
+  submeshFirstTriangle: 00000000190a0000a60a00009c10000036110000ed1100000412000091120000i
+  submeshLayers: 0200000002000000020000000200000002000000020000000200000002000000i
 --- !u!23 &2357368160977128119 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3608691176503827960, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
@@ -697,6 +1258,27 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5477519669065189623, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
   m_PrefabInstance: {fileID: 7880269812557719743}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2622675702085870096 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5276470554023217839, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
+  m_PrefabInstance: {fileID: 7880269812557719743}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8516646061113541530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2622675702085870096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Maxilla.r
+  isTooth: 0
+  submeshFirstTriangle: 00000000190a0000a60a00009c10000036110000ed1100000412000091120000i
+  submeshLayers: 0200000002000000020000000200000002000000020000000200000002000000i
 --- !u!4 &7698603232586747732 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5820fa03fda943a6b730b6a381f8b1a, type: 3}
@@ -757,7 +1339,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ed0b151805e024c29af771937821ae4e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3140338620138322923}
   m_SourcePrefab: {fileID: 100100000, guid: ed0b151805e024c29af771937821ae4e, type: 3}
 --- !u!23 &7439874123366338765 stripped
 MeshRenderer:
@@ -769,6 +1354,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ed0b151805e024c29af771937821ae4e, type: 3}
   m_PrefabInstance: {fileID: 8141993250077379657}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8952947602680230168 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ed0b151805e024c29af771937821ae4e, type: 3}
+  m_PrefabInstance: {fileID: 8141993250077379657}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3140338620138322923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8952947602680230168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: Mandible
+  isTooth: 0
+  submeshFirstTriangle: 00000000bf1d000016490000i
+  submeshLayers: 020000000200000002000000i
 --- !u!1001 &8338228471697285784
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -824,7 +1430,49 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2188772060331189167, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6123931835946522047}
+    - targetCorrespondingSourceObject: {fileID: 8668286426663117978, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8151852853721072791}
+    - targetCorrespondingSourceObject: {fileID: 3213935577139469734, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6276912986184566251}
+    - targetCorrespondingSourceObject: {fileID: -1849982844981497527, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4890634874692852305}
+    - targetCorrespondingSourceObject: {fileID: -7891075858381004883, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8612858923135318152}
+    - targetCorrespondingSourceObject: {fileID: 763087053868257915, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9032045769931914990}
+    - targetCorrespondingSourceObject: {fileID: 3228557647781200876, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5816579162755272073}
+    - targetCorrespondingSourceObject: {fileID: -7975751531993702275, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7799817032528673827}
+    - targetCorrespondingSourceObject: {fileID: 1901122345528476060, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 386124311233008868}
+    - targetCorrespondingSourceObject: {fileID: -4286807620297079679, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8226723302509282179}
+    - targetCorrespondingSourceObject: {fileID: -3717953449669730046, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8407745231317925240}
+    - targetCorrespondingSourceObject: {fileID: -6036100331329411049, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5312832858510002553}
+    - targetCorrespondingSourceObject: {fileID: -1976039249639724258, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1465498587745786748}
+    - targetCorrespondingSourceObject: {fileID: 7428472906279852851, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7746944313573029894}
   m_SourcePrefab: {fileID: 100100000, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
 --- !u!23 &233251965430285461 stripped
 MeshRenderer:
@@ -841,6 +1489,90 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -391941150394700118, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
   m_PrefabInstance: {fileID: 8338228471697285784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &863747790009320962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8668286426663117978, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8151852853721072791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863747790009320962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 13
+  isTooth: 1
+  submeshFirstTriangle: 0000000026030000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &1486304828421061035 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7428472906279852851, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7746944313573029894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486304828421061035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 15
+  isTooth: 1
+  submeshFirstTriangle: 00000000a2020000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &1577628738133103569 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1849982844981497527, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4890634874692852305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577628738133103569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 16
+  isTooth: 1
+  submeshFirstTriangle: 0000000008040000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &1667708830276782470 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1976039249639724258, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1465498587745786748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667708830276782470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 25
+  isTooth: 1
+  submeshFirstTriangle: 00000000a2020000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &2435899483932558622 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5942881450508101510, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
@@ -856,6 +1588,48 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -2567187314329329634, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
   m_PrefabInstance: {fileID: 8338228471697285784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3978197667276776985 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4286807620297079679, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8226723302509282179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3978197667276776985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 11
+  isTooth: 1
+  submeshFirstTriangle: 000000007d030000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &4598311098409534362 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3717953449669730046, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8407745231317925240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4598311098409534362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 27
+  isTooth: 1
+  submeshFirstTriangle: 00000000ea020000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &5508570749867162669 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -4628282645239767371, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
@@ -866,16 +1640,163 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3371492418547082397, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
   m_PrefabInstance: {fileID: 8338228471697285784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6858252143509634878 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3213935577139469734, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6276912986184566251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6858252143509634878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 26
+  isTooth: 1
+  submeshFirstTriangle: 0000000008040000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &6879655863406961012 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3228557647781200876, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5816579162755272073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6879655863406961012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 22
+  isTooth: 1
+  submeshFirstTriangle: 0000000046030000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &6884913283525937807 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6036100331329411049, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5312832858510002553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6884913283525937807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 17
+  isTooth: 1
+  submeshFirstTriangle: 00000000ea020000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &7046465239626988853 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7891075858381004883, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8612858923135318152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046465239626988853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 24
+  isTooth: 1
+  submeshFirstTriangle: 000000000f030000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &7123781493527459812 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7968108970854050436, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
   m_PrefabInstance: {fileID: 8338228471697285784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7126707407483060965 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7975751531993702275, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7799817032528673827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7126707407483060965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 12
+  isTooth: 1
+  submeshFirstTriangle: 0000000046030000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &7194720842287624216 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -8039032118997183872, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
   m_PrefabInstance: {fileID: 8338228471697285784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7626127088606044932 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1901122345528476060, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &386124311233008868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626127088606044932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 21
+  isTooth: 1
+  submeshFirstTriangle: 000000007d030000i
+  submeshLayers: 0000000001000000i
+--- !u!1 &7914867482484506935 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2188772060331189167, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6123931835946522047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7914867482484506935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 23
+  isTooth: 1
+  submeshFirstTriangle: 0000000026030000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &8026315169495345897 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7145975095775082383, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
@@ -896,6 +1817,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
   m_PrefabInstance: {fileID: 8338228471697285784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8728065396337602787 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 763087053868257915, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}
+  m_PrefabInstance: {fileID: 8338228471697285784}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9032045769931914990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8728065396337602787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cd9ac25774de48e7920b59bb0a0874b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.SelectableStructure
+  key: 14
+  isTooth: 1
+  submeshFirstTriangle: 000000000f030000i
+  submeshLayers: 0000000001000000i
 --- !u!23 &8967100892222239628 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1136838250337276180, guid: a4e1de31b58eb4e41a8118b313daa08b, type: 3}

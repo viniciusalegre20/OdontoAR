@@ -22,7 +22,7 @@ namespace OdontoAR.Model
 
     /// <summary>
     /// Estado do modelo, sem MonoBehaviour (testável em EditMode):
-    /// posicionamento, rotação, escala, arcada visível, abertura da boca e camadas.
+    /// posicionamento, rotação, escala, arcada visível, abertura da boca, camadas e estrutura selecionada.
     /// </summary>
     public sealed class ModelState
     {
@@ -53,12 +53,25 @@ namespace OdontoAR.Model
         // Todas as camadas começam visíveis (visualização integrada).
         readonly bool[] layerVisible = { true, true, true, true };
 
+        /// <summary>
+        /// Chave da estrutura selecionada no <c>StructureCatalog</c> (código FDI do dente ou nome do objeto),
+        /// ou null sem seleção (RF09).
+        /// </summary>
+        public string SelectedKey { get; private set; }
+
+        /// <summary>Camada do ponto tocado na estrutura selecionada.</summary>
+        public Layer SelectedLayer { get; private set; }
+
+        public bool HasSelection => SelectedKey != null;
+
         public void SetPlaced(bool placed)
         {
             if (IsPlaced == placed)
                 return;
 
             IsPlaced = placed;
+            if (!placed)
+                SelectedKey = null;
             Changed?.Invoke();
         }
 
@@ -130,9 +143,34 @@ namespace OdontoAR.Model
                 SetLayerVisible(layer, !layerVisible[(int)layer]);
         }
 
+        public void Select(string key, Layer layer)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                ClearSelection();
+                return;
+            }
+
+            if (!IsValid(layer) || (key == SelectedKey && layer == SelectedLayer))
+                return;
+
+            SelectedKey = key;
+            SelectedLayer = layer;
+            Changed?.Invoke();
+        }
+
+        public void ClearSelection()
+        {
+            if (SelectedKey == null)
+                return;
+
+            SelectedKey = null;
+            Changed?.Invoke();
+        }
+
         /// <summary>
         /// "Restaurar vista" (RF07): volta rotação e escala ao padrão, sem mover o modelo.
-        /// Arcada, abertura e camadas ficam como o aluno deixou.
+        /// Arcada, abertura, camadas e seleção ficam como o aluno deixou.
         /// </summary>
         public void ResetView()
         {

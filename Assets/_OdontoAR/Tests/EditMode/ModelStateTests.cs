@@ -199,5 +199,64 @@ namespace OdontoAR.Tests
             state.ResetView();
             Assert.IsFalse(state.IsLayerVisible(Layer.Root));
         }
+
+        [Test]
+        public void ComecaSemSelecao()
+        {
+            Assert.IsFalse(state.HasSelection);
+            Assert.IsNull(state.SelectedKey);
+        }
+
+        [Test]
+        public void SelecionarGuardaChaveECamada()
+        {
+            state.Select("36", Layer.Root);
+            state.Select("36", Layer.Root);
+            Assert.AreEqual("36", state.SelectedKey);
+            Assert.AreEqual(Layer.Root, state.SelectedLayer);
+            Assert.AreEqual(1, changes);
+        }
+
+        [Test]
+        public void MesmaEstruturaEmOutraCamadaNotifica()
+        {
+            state.Select("36", Layer.Root);
+            state.Select("36", Layer.Crown);
+            Assert.AreEqual(Layer.Crown, state.SelectedLayer);
+            Assert.AreEqual(2, changes);
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        public void ChaveVaziaLimpaSelecao(string key)
+        {
+            state.Select("11", Layer.Crown);
+            state.Select(key, Layer.Crown);
+            Assert.IsFalse(state.HasSelection);
+        }
+
+        [Test]
+        public void CamadaInvalidaNaoSeleciona()
+        {
+            state.Select("11", (Layer)99);
+            Assert.IsFalse(state.HasSelection);
+            Assert.AreEqual(0, changes);
+        }
+
+        [Test]
+        public void ReposicionarLimpaSelecao()
+        {
+            state.SetPlaced(true);
+            state.Select("Mandible", Layer.Bone);
+            state.SetPlaced(false);
+            Assert.IsFalse(state.HasSelection);
+        }
+
+        [Test]
+        public void LimparSemSelecaoNaoNotifica()
+        {
+            state.ClearSelection();
+            Assert.AreEqual(0, changes);
+        }
     }
 }

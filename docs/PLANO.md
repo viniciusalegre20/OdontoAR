@@ -55,7 +55,7 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 - 🤖 Visualização integrada: com osso ou nervos visíveis, coroa a 55% e raiz a 70%.
 - **Aceite:** 4 toggles funcionam no iPhone; FPS ≥ 30 com tudo ligado.
 
-### T7 — Seleção e cartão FDI (RF09)
+### T7 — Seleção e cartão FDI (RF09) ✅ (24/10)
 - 🤖 `StructureCatalog` (ScriptableObject em `Data/`) com nome em português dos 28 dentes do modelo (e dos 4 terceiros molares, para quando existirem), das camadas, da maxila, da mandíbula e dos nervos; chave = código FDI.
 - 🤖 `SelectionController`: toque curto (sem arrastar) faz raycast nos colliders, contorno ciano na estrutura, resto a 20%.
 - 🤖 Cartão flutuante ancorado ("Primeiro molar inferior esquerdo — 36", "Camada: Raiz").

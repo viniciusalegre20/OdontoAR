@@ -43,6 +43,16 @@ namespace OdontoAR.Theme
         public const float IntegratedCrownOpacity = 0.55f;
         public const float IntegratedRootOpacity = 0.70f;
 
+        // Seleção (RF09): contorno da estrutura tocada e opacidade de todo o resto.
+        public static readonly Color SelectionOutline = new(0f, 0.9f, 1f, 1f); // ciano
+        public const float SelectionOutlineWidth = 0.0008f; // m
+        public const float DimmedOpacity = 0.2f;
+
+        // Cartão da estrutura selecionada.
+        public static readonly Color CardBackground = new(1f, 1f, 1f, 0.95f);
+        public static readonly Color CardTitle = new(0.1f, 0.12f, 0.16f, 1f);
+        public static readonly Color CardText = new(0.35f, 0.38f, 0.44f, 1f);
+
         // Material de camada oculta (submesh do dente que não deve aparecer).
         public static readonly Color Hidden = new(0f, 0f, 0f, 0f);
 

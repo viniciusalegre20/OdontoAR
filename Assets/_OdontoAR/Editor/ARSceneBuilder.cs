@@ -23,7 +23,7 @@ using UnityEngine.XR.ARSubsystems;
 namespace OdontoAR.Editor
 {
     /// <summary>
-    /// T3–T6: aplica os materiais dos modelos e gera Prefabs/Arcadas.prefab (a partir dos FBX),
+    /// T3–T7: aplica os materiais dos modelos e gera Prefabs/Arcadas.prefab (a partir dos FBX),
     /// Prefabs/PlanoAR.prefab (invisível), a mira de posicionamento e Scenes/AR.unity já ligados
     /// entre si, e coloca a cena AR como a única do build.
     /// Recria tudo a cada execução. Por terminal:
@@ -44,6 +44,8 @@ namespace OdontoAR.Editor
         const string ReticleMeshPath = ModelsFolder + "/MiraPosicionamento.asset";
         const string ShadowMaterialPath = MaterialsFolder + "/SombraContato.mat";
         const string ShadowTexturePath = MaterialsFolder + "/SombraContato.png";
+        const string DataFolder = Root + "/Data";
+        const string CatalogPath = DataFolder + "/Estruturas.asset";
 
         // A sombra cobre a projeção das arcadas na mesa com uma folga, para o degradê sumir fora dela.
         const float ContactShadowMargin = 1.4f;
@@ -93,6 +95,7 @@ namespace OdontoAR.Editor
             EnsureFolder(PrefabsFolder);
             EnsureFolder(MaterialsFolder);
             EnsureFolder(ScenesFolder);
+            EnsureFolder(DataFolder);
 
             // Material sem correspondência só gera aviso: a cena pode ser montada assim mesmo.
             ModelImportSettings.Apply();
@@ -138,6 +141,21 @@ namespace OdontoAR.Editor
 
             var gestures = origin.gameObject.AddComponent<ModelGestures>();
             SetReference(gestures, "holder", holder);
+
+            var selection = origin.gameObject.AddComponent<SelectionController>();
+            SetReference(selection, "holder", holder);
+            SetReference(selection, "arCamera", arCamera);
+            SetReference(selection, "outlineMaterial", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.OutlinePath));
+            SetArray(selection, "structures", arcadas.GetComponentsInChildren<SelectableStructure>(true));
+
+            var card = ui.Canvas.AddComponent<StructureCard>();
+            SetReference(card, "holder", holder);
+            SetReference(card, "catalog", AssetDatabase.LoadAssetAtPath<StructureCatalog>(CatalogPath));
+            SetReference(card, "selection", selection);
+            SetReference(card, "arCamera", arCamera);
+            SetReference(card, "card", ui.Card);
+            SetReference(card, "title", ui.CardTitle);
+            SetReference(card, "layer", ui.CardLayer);
 
             var archControls = ui.PlacedControls.AddComponent<ArchControls>();
             SetReference(archControls, "holder", holder);
@@ -225,10 +243,22 @@ namespace OdontoAR.Editor
                 SetReference(layers, "rootTranslucent",
                     AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.RootTranslucentPath));
                 SetReference(layers, "hidden", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.HiddenPath));
-                SetArray(layers, "teeth", RenderersOf(superior, "Dentes_Superiores")
-                    .Concat(RenderersOf(inferior, "Dentes_Inferiores")));
-                SetArray(layers, "bone", RenderersOf(superior, "Maxila").Concat(RenderersOf(inferior, "Mandibula")));
-                SetArray(layers, "nerves", RenderersOf(modelo, "Nervos"));
+                SetReference(layers, "bone", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.BonePath));
+                SetReference(layers, "nerve", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.NervePath));
+                SetReference(layers, "crownDimmed", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.CrownDimmedPath));
+                SetReference(layers, "rootDimmed", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.RootDimmedPath));
+                SetReference(layers, "boneDimmed", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.BoneDimmedPath));
+                SetReference(layers, "nerveDimmed", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.NerveDimmedPath));
+                var teeth = RenderersOf(superior, "Dentes_Superiores").Concat(RenderersOf(inferior, "Dentes_Inferiores")).ToList();
+                var boneRenderers = RenderersOf(superior, "Maxila").Concat(RenderersOf(inferior, "Mandibula")).ToList();
+                var nerveRenderers = RenderersOf(modelo, "Nervos").ToList();
+                SetArray(layers, "teeth", teeth);
+                SetArray(layers, "boneRenderers", boneRenderers);
+                SetArray(layers, "nerveRenderers", nerveRenderers);
+
+                BuildCatalog(AddSelectable(teeth, tooth: true)
+                    .Concat(AddSelectable(boneRenderers, tooth: false))
+                    .Concat(AddSelectable(nerveRenderers, tooth: false)));
 
                 modelo.transform.localPosition = -bounds.center;
                 SetReference(view, "holder", holder);
@@ -245,6 +275,86 @@ namespace OdontoAR.Editor
             {
                 Object.DestroyImmediate(root);
             }
+        }
+
+        /// <summary>
+        /// Põe um SelectableStructure em cada malha, com a chave (FDI nos dentes, nome do objeto nas demais)
+        /// e o primeiro triângulo e a camada de cada submesh. Devolve chave e nome para o catálogo.
+        /// </summary>
+        static List<StructureCatalog.Entry> AddSelectable(IEnumerable<Renderer> renderers, bool tooth)
+        {
+            var crown = AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.CrownPath);
+            var nerve = AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.NervePath);
+            var entries = new List<StructureCatalog.Entry>();
+
+            foreach (var renderer in renderers)
+            {
+                var mesh = renderer.GetComponent<MeshFilter>().sharedMesh;
+
+                // FBX de uma malha só (a mandíbula) vira o próprio objeto raiz, que é renomeado no prefab;
+                // aí o nome do atlas fica só na malha.
+                var objectName = renderer.gameObject.name;
+                if (!tooth && !StructureNames.TryOther(objectName, out _))
+                    objectName = mesh.name;
+
+                string key, displayName;
+                if (tooth && FdiCode.TryParse(objectName, out var code) && StructureNames.TryTooth(code, out displayName))
+                {
+                    key = code.ToString();
+                }
+                else if (!tooth && StructureNames.TryOther(objectName, out displayName))
+                {
+                    key = objectName;
+                }
+                else
+                {
+                    Debug.LogWarning($"[OdontoAR] \"{objectName}\" sem nome em português; não será selecionável.");
+                    continue;
+                }
+
+                var materials = renderer.sharedMaterials;
+                var firstTriangles = new int[mesh.subMeshCount];
+                var layers = new Layer[mesh.subMeshCount];
+                for (var i = 0; i < mesh.subMeshCount; i++)
+                {
+                    firstTriangles[i] = (int)(mesh.GetSubMesh(i).indexStart / 3);
+                    var material = i < materials.Length ? materials[i] : null;
+                    layers[i] = tooth
+                        ? material == crown ? Layer.Crown : Layer.Root
+                        : material == nerve ? Layer.Nerves : Layer.Bone;
+                }
+
+                var structure = renderer.gameObject.AddComponent<SelectableStructure>();
+                structure.Configure(key, tooth, firstTriangles, layers);
+                entries.Add(new StructureCatalog.Entry { key = key, displayName = displayName });
+            }
+
+            return entries;
+        }
+
+        static void BuildCatalog(IEnumerable<StructureCatalog.Entry> structures)
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<StructureCatalog>(CatalogPath);
+            if (catalog == null)
+            {
+                catalog = ScriptableObject.CreateInstance<StructureCatalog>();
+                AssetDatabase.CreateAsset(catalog, CatalogPath);
+            }
+
+            // Dentes do modelo e também os ausentes (terceiros molares), para quando existirem.
+            var entries = structures.GroupBy(e => e.key).Select(g => g.First()).ToList();
+            foreach (var code in FdiCode.AllPermanent)
+            {
+                var key = code.ToString();
+                if (entries.All(e => e.key != key) && StructureNames.TryTooth(code, out var name))
+                    entries.Add(new StructureCatalog.Entry { key = key, displayName = name });
+            }
+            foreach (Layer layer in System.Enum.GetValues(typeof(Layer)))
+                entries.Add(new StructureCatalog.Entry
+                    { key = StructureCatalog.LayerKey(layer), displayName = StructureNames.LayerName(layer) });
+
+            catalog.SetEntries(entries.OrderBy(e => e.key, System.StringComparer.Ordinal));
+            EditorUtility.SetDirty(catalog);
         }
 
         static IEnumerable<Renderer> RenderersOf(GameObject parent, string child) =>
@@ -489,6 +599,10 @@ namespace OdontoAR.Editor
             public Button RootButton;
             public Button BoneButton;
             public Button NervesButton;
+            public GameObject Canvas;
+            public RectTransform Card;
+            public TextMeshProUGUI CardTitle;
+            public TextMeshProUGUI CardLayer;
         }
 
         static UIRefs CreateCanvas()
@@ -576,6 +690,31 @@ namespace OdontoAR.Editor
 
             controls.SetActive(false);
 
+            // Cartão da estrutura selecionada (RF09): o StructureCard o posiciona acima da estrutura.
+            var card = new GameObject("CartaoEstrutura", typeof(RectTransform), typeof(Image),
+                typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
+            card.transform.SetParent(canvasGo.transform, false);
+            var cardRect = (RectTransform)card.transform;
+            cardRect.anchorMin = cardRect.anchorMax = new Vector2(0.5f, 0.5f);
+            cardRect.pivot = new Vector2(0.5f, 0f);
+            cardRect.sizeDelta = new Vector2(900f, 0f);
+            var cardImage = card.GetComponent<Image>();
+            cardImage.sprite = resources.standard;
+            cardImage.type = Image.Type.Sliced;
+            cardImage.color = OdontoARTheme.CardBackground;
+            cardImage.raycastTarget = false; // o toque passa para o modelo
+            var cardLayout = card.GetComponent<VerticalLayoutGroup>();
+            cardLayout.padding = new RectOffset(36, 36, 24, 24);
+            cardLayout.spacing = 8f;
+            cardLayout.childControlWidth = cardLayout.childControlHeight = true;
+            cardLayout.childForceExpandWidth = true;
+            cardLayout.childForceExpandHeight = false;
+            card.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var cardTitle = CreateText(card.transform, "", 44f, OdontoARTheme.CardTitle);
+            cardTitle.fontStyle = FontStyles.Bold;
+            var cardLayer = CreateText(card.transform, "", 36f, OdontoARTheme.CardText);
+            card.SetActive(false);
+
             return new UIRefs
             {
                 Hint = hint,
@@ -590,6 +729,10 @@ namespace OdontoAR.Editor
                 RootButton = root,
                 BoneButton = bone,
                 NervesButton = nerves,
+                Canvas = canvasGo,
+                Card = cardRect,
+                CardTitle = cardTitle,
+                CardLayer = cardLayer,
             };
         }
 

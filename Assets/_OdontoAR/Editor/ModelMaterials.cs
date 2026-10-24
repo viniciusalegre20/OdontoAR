@@ -24,6 +24,13 @@ namespace OdontoAR.Editor
         public const string CrownTranslucentPath = MaterialsFolder + "/Coroa_Translucida.mat";
         public const string RootTranslucentPath = MaterialsFolder + "/Raiz_Translucida.mat";
         public const string HiddenPath = MaterialsFolder + "/Oculto.mat";
+        public const string BonePath = MaterialsFolder + "/Osso.mat";
+        public const string NervePath = MaterialsFolder + "/Nervo.mat";
+        public const string CrownDimmedPath = MaterialsFolder + "/Coroa_Esmaecida.mat";
+        public const string RootDimmedPath = MaterialsFolder + "/Raiz_Esmaecida.mat";
+        public const string BoneDimmedPath = MaterialsFolder + "/Osso_Esmaecido.mat";
+        public const string NerveDimmedPath = MaterialsFolder + "/Nervo_Esmaecido.mat";
+        public const string OutlinePath = MaterialsFolder + "/Contorno.mat";
 
         // Ordem dos transparentes: dentes, depois o osso por cima (o osso envolve as raízes).
         const int TeethQueue = (int)RenderQueue.Transparent;
@@ -63,6 +70,27 @@ namespace OdontoAR.Editor
             var hidden = GetOrCreate("Oculto", OdontoARTheme.Hidden, 0f);
             MakeTransparent(hidden, OdontoARTheme.Hidden.a, writeDepth: false, TeethQueue);
             hidden.SetShaderPassEnabled("ShadowCaster", false);
+
+            // Esmaecidos (RF09): tudo o que não está selecionado. Sem escrever profundidade, para não
+            // esconder a estrutura selecionada que esteja atrás.
+            MakeTransparent(GetOrCreate("Coroa_Esmaecida", OdontoARTheme.ToothCrown, OdontoARTheme.ToothSmoothness),
+                OdontoARTheme.DimmedOpacity, writeDepth: false, TeethQueue);
+            MakeTransparent(GetOrCreate("Raiz_Esmaecida", OdontoARTheme.ToothRoot, OdontoARTheme.ToothSmoothness),
+                OdontoARTheme.DimmedOpacity, writeDepth: false, TeethQueue);
+            MakeTransparent(GetOrCreate("Osso_Esmaecido", OdontoARTheme.Bone, OdontoARTheme.BoneSmoothness),
+                OdontoARTheme.DimmedOpacity, writeDepth: false, BoneQueue);
+            MakeTransparent(GetOrCreate("Nervo_Esmaecido", OdontoARTheme.Nerve, OdontoARTheme.NerveSmoothness),
+                OdontoARTheme.DimmedOpacity, writeDepth: false, TeethQueue);
+
+            var outline = AssetDatabase.LoadAssetAtPath<Material>(OutlinePath);
+            if (outline == null)
+            {
+                outline = new Material(Shader.Find("OdontoAR/Contorno"));
+                AssetDatabase.CreateAsset(outline, OutlinePath);
+            }
+            outline.SetColor("_BaseColor", OdontoARTheme.SelectionOutline);
+            outline.SetFloat("_Width", OdontoARTheme.SelectionOutlineWidth);
+            EditorUtility.SetDirty(outline);
 
             var ok = true;
             foreach (var guid in AssetDatabase.FindAssets("t:Model", new[] { ModelsFolder }))
