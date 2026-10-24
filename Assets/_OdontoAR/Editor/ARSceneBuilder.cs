@@ -339,6 +339,10 @@ namespace OdontoAR.Editor
             var origin = originGo.GetComponent<XROrigin>();
             origin.CameraFloorOffsetObject = offset;
             origin.Camera = camera;
+            // O padrão (1,1176 m, pensado para óculos de VR) subia a câmera em relação aos planos e
+            // âncoras, que ficam no espaço da sessão: a arcada parecia acompanhar o iPhone.
+            origin.RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
+            origin.CameraYOffset = 0f;
             return (origin, camera);
         }
 
