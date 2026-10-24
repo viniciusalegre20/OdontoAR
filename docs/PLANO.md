@@ -24,7 +24,10 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 - ✅ `.gitignore` do Unity (Library, Temp, Builds, Logs, UserSettings) — feito na T0.
 - **Aceite:** comando do `CLAUDE.md` gera o Xcode sem erro.
 
-### T3 — Cena de RA
+### T3 — Cena de RA ✅ (24/10, com pendência)
+> **Pendência:** no iPhone a arcada ainda parece "andar junto com a câmera" (logs mostram âncora e
+> pose fixas no mundo). Retomar depois da T4: comparar com o XR Origin (Mobile AR) oficial e testar com
+> marcadores fixos de depuração.
 - 🤖 `Editor/ARSceneBuilder.cs` (menu `OdontoAR/Criar cena AR`): cria `Scenes/AR.unity` com XR Origin, AR Session, ARPlaneManager (horizontal), ARRaycastManager, EventSystem com InputSystemUIInputModule, Canvas.
 - 🤖 Escrever `ARTapToPlace` e `ModelGestures` em `Scripts/AR/` (EnhancedTouch).
 - 🤖 O menu também gera `Prefabs/Arcadas.prefab` a partir dos FBX e liga todas as referências (nada a arrastar no Inspector).
