@@ -41,7 +41,7 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 
 ## Semana 2 (02–08/11): camadas e seleção
 
-### T5 — Convenção do modelo + validador
+### T5 — Convenção do modelo + validador ✅ (24/10)
 > Modelo recebido em 24/10 (ver `docs/AUDITORIA.md`): 5 FBX do atlas Z-Anatomy, nomes em inglês
 > (`Upper first molar tooth.l`), coroa e raiz como materiais (`Teeth`, `Teeth-roots`) dentro da malha
 > de cada dente, **sem polpa** (decisão: POC segue sem polpa) e sem terceiros molares.

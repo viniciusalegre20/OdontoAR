@@ -94,6 +94,7 @@ namespace OdontoAR.Editor
             EnsureFolder(ScenesFolder);
 
             // Material sem correspondência só gera aviso: a cena pode ser montada assim mesmo.
+            ModelImportSettings.Apply();
             ModelMaterials.Apply();
 
             var arcadasPrefab = BuildArcadasPrefab();
