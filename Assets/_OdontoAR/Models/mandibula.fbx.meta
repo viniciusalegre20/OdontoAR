@@ -3,7 +3,22 @@ guid: ed0b151805e024c29af771937821ae4e
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bone
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cartilage
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture-1
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

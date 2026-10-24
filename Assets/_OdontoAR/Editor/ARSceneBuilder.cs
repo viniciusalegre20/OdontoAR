@@ -20,8 +20,9 @@ using UnityEngine.XR.ARSubsystems;
 namespace OdontoAR.Editor
 {
     /// <summary>
-    /// T3: gera Prefabs/Arcadas.prefab (a partir dos FBX), Prefabs/PlanoAR.prefab, Materials/PlanoAR.mat
-    /// e Scenes/AR.unity já ligados entre si, e coloca a cena AR como a única do build.
+    /// T3: aplica os materiais dos modelos e gera Prefabs/Arcadas.prefab (a partir dos FBX),
+    /// Prefabs/PlanoAR.prefab (invisível), a mira de posicionamento e Scenes/AR.unity já ligados
+    /// entre si, e coloca a cena AR como a única do build.
     /// Recria tudo a cada execução. Por terminal:
     /// -executeMethod OdontoAR.Editor.ARSceneBuilder.CreateARScene
     /// </summary>
@@ -36,7 +37,13 @@ namespace OdontoAR.Editor
         public const string ScenePath = ScenesFolder + "/AR.unity";
         const string ArcadasPrefabPath = PrefabsFolder + "/Arcadas.prefab";
         const string PlanePrefabPath = PrefabsFolder + "/PlanoAR.prefab";
-        const string PlaneMaterialPath = MaterialsFolder + "/PlanoAR.mat";
+        const string ReticleMaterialPath = MaterialsFolder + "/MiraPosicionamento.mat";
+        const string ReticleMeshPath = ModelsFolder + "/MiraPosicionamento.asset";
+
+        // Anel da mira, em metros.
+        const float ReticleInnerRadius = 0.045f;
+        const float ReticleOuterRadius = 0.055f;
+        const int ReticleSegments = 64;
 
         // Resolução de referência da interface: iPhone em retrato (pixels).
         static readonly Vector2 ReferenceResolution = new(1170f, 2532f);
@@ -76,6 +83,9 @@ namespace OdontoAR.Editor
             EnsureFolder(MaterialsFolder);
             EnsureFolder(ScenesFolder);
 
+            // Material sem correspondência só gera aviso: a cena pode ser montada assim mesmo.
+            ModelMaterials.Apply();
+
             var arcadasPrefab = BuildArcadasPrefab();
             if (arcadasPrefab == null)
                 return false;
@@ -92,10 +102,13 @@ namespace OdontoAR.Editor
             planeManager.planePrefab = planePrefab;
             planeManager.requestedDetectionMode = PlaneDetectionMode.Horizontal;
             var raycastManager = origin.gameObject.AddComponent<ARRaycastManager>();
+            var anchorManager = origin.gameObject.AddComponent<ARAnchorManager>();
 
             var arcadas = (GameObject)PrefabUtility.InstantiatePrefab(arcadasPrefab, scene);
             arcadas.SetActive(false); // aparece ao tocar na mesa
             var holder = arcadas.GetComponent<ModelStateHolder>();
+
+            var reticle = CreateReticle();
 
             CreateEventSystem();
             var ui = CreateCanvas();
@@ -103,8 +116,10 @@ namespace OdontoAR.Editor
             var tapToPlace = origin.gameObject.AddComponent<ARTapToPlace>();
             SetReference(tapToPlace, "raycastManager", raycastManager);
             SetReference(tapToPlace, "planeManager", planeManager);
+            SetReference(tapToPlace, "anchorManager", anchorManager);
             SetReference(tapToPlace, "holder", holder);
             SetReference(tapToPlace, "arCamera", arCamera);
+            SetReference(tapToPlace, "reticle", reticle);
             SetReference(tapToPlace, "placementHint", ui.Hint);
             SetReference(tapToPlace, "placedControls", ui.PlacedControls);
 
@@ -191,17 +206,15 @@ namespace OdontoAR.Editor
             return true;
         }
 
+        /// <summary>
+        /// Plano invisível: só o ARPlane, que o raycast usa. Desenhar os planos do ARKit deixava a tela
+        /// poluída (planos sobrepostos e piscando); quem mostra onde a arcada vai é a mira.
+        /// </summary>
         static GameObject BuildPlanePrefab()
         {
-            var go = new GameObject("PlanoAR",
-                typeof(ARPlane), typeof(ARPlaneMeshVisualizer),
-                typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
+            var go = new GameObject("PlanoAR", typeof(ARPlane));
             try
             {
-                var meshRenderer = go.GetComponent<MeshRenderer>();
-                meshRenderer.sharedMaterial = BuildPlaneMaterial();
-                meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                meshRenderer.receiveShadows = false;
                 return PrefabUtility.SaveAsPrefabAsset(go, PlanePrefabPath);
             }
             finally
@@ -210,13 +223,65 @@ namespace OdontoAR.Editor
             }
         }
 
-        static Material BuildPlaneMaterial()
+        static Transform CreateReticle()
         {
-            var material = AssetDatabase.LoadAssetAtPath<Material>(PlaneMaterialPath);
+            var go = new GameObject("MiraPosicionamento", typeof(MeshFilter), typeof(MeshRenderer));
+            go.GetComponent<MeshFilter>().sharedMesh = BuildRingMesh();
+            var meshRenderer = go.GetComponent<MeshRenderer>();
+            meshRenderer.sharedMaterial = BuildReticleMaterial();
+            meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            meshRenderer.receiveShadows = false;
+            go.SetActive(false); // aparece quando encontra a mesa
+            return go.transform;
+        }
+
+        /// <summary>Anel plano no XZ, virado para cima, com um leve afastamento da mesa.</summary>
+        static Mesh BuildRingMesh()
+        {
+            const float lift = 0.001f;
+            var vertices = new Vector3[ReticleSegments * 2];
+            var triangles = new int[ReticleSegments * 6];
+            for (var i = 0; i < ReticleSegments; i++)
+            {
+                var angle = i * Mathf.PI * 2f / ReticleSegments;
+                var dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+                vertices[i * 2] = dir * ReticleInnerRadius + Vector3.up * lift;
+                vertices[i * 2 + 1] = dir * ReticleOuterRadius + Vector3.up * lift;
+
+                var next = (i + 1) % ReticleSegments;
+                var t = i * 6;
+                triangles[t] = i * 2;
+                triangles[t + 1] = next * 2;
+                triangles[t + 2] = i * 2 + 1;
+                triangles[t + 3] = i * 2 + 1;
+                triangles[t + 4] = next * 2;
+                triangles[t + 5] = next * 2 + 1;
+            }
+
+            var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(ReticleMeshPath);
+            if (mesh == null)
+            {
+                mesh = new Mesh();
+                AssetDatabase.CreateAsset(mesh, ReticleMeshPath);
+            }
+
+            mesh.Clear();
+            mesh.name = "MiraPosicionamento";
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            EditorUtility.SetDirty(mesh);
+            return mesh;
+        }
+
+        static Material BuildReticleMaterial()
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(ReticleMaterialPath);
             if (material == null)
             {
                 material = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-                AssetDatabase.CreateAsset(material, PlaneMaterialPath);
+                AssetDatabase.CreateAsset(material, ReticleMaterialPath);
             }
 
             // URP Unlit transparente (Alpha blend), sem escrita de profundidade.
@@ -228,7 +293,8 @@ namespace OdontoAR.Editor
             material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             material.SetOverrideTag("RenderType", "Transparent");
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-            material.SetColor("_BaseColor", OdontoARTheme.PlaneFill);
+            material.SetFloat("_Cull", (float)UnityEngine.Rendering.CullMode.Off);
+            material.SetColor("_BaseColor", OdontoARTheme.PlacementReticle);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -319,7 +385,7 @@ namespace OdontoAR.Editor
             hintImage.raycastTarget = false;
 
             var hintText = CreateText(hint.transform,
-                "Aponte a câmera para a mesa e toque na área destacada para posicionar a arcada.", 44f,
+                "Aponte para a mesa e mova o iPhone devagar. Quando o círculo aparecer, toque na tela para posicionar a arcada.", 44f,
                 OdontoARTheme.TextOnOverlay);
             var hintTextRect = (RectTransform)hintText.transform;
             hintTextRect.anchorMin = Vector2.zero;

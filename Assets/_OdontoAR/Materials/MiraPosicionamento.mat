@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlanoAR
+  m_Name: MiraPosicionamento
   m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -22,8 +22,6 @@ Material:
     RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS
-  - DepthOnly
-  - SHADOWCASTER
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -43,10 +41,10 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendOp: 0
-    - _Cull: 2
+    - _Cull: 0
     - _Cutoff: 0.5
     - _DstBlend: 10
-    - _DstBlendAlpha: 10
+    - _DstBlendAlpha: 0
     - _QueueOffset: 0
     - _SampleGI: 0
     - _SrcBlend: 5
@@ -55,11 +53,11 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0.13, g: 0.83, b: 0.93, a: 0.25}
-    - _Color: {r: 0.12999997, g: 0.83, b: 0.93, a: 0.25}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 0.9}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &4079332683706288028
+--- !u!114 &4811077971021958184
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

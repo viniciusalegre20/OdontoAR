@@ -18,7 +18,18 @@ namespace OdontoAR.Theme
         // Texto sobre superfícies escuras.
         public static readonly Color TextOnOverlay = Color.white;
 
-        // Planos detectados pelo ARKit (preenchimento translúcido).
-        public static readonly Color PlaneFill = new(0.13f, 0.83f, 0.93f, 0.25f);
+        // Mira de posicionamento sobre a mesa.
+        public static readonly Color PlacementReticle = new(1f, 1f, 1f, 0.9f);
+
+        // Estruturas anatômicas.
+        public static readonly Color ToothCrown = new(0.96f, 0.95f, 0.90f, 1f); // esmalte: marfim
+        public static readonly Color ToothRoot = new(0.91f, 0.82f, 0.62f, 1f);  // raiz e dentina: amarelada
+        public static readonly Color Bone = new(0.86f, 0.78f, 0.64f, 1f);       // maxila e mandíbula: bege
+        public static readonly Color Nerve = new(0.18f, 0.45f, 0.92f, 1f);      // nervos: azul
+
+        // Acabamento das estruturas (URP Lit: 0 = fosco, 1 = espelhado).
+        public const float ToothSmoothness = 0.6f;
+        public const float BoneSmoothness = 0.25f;
+        public const float NerveSmoothness = 0.4f;
     }
 }

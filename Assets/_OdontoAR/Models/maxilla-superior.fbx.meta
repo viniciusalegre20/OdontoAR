@@ -3,7 +3,47 @@ guid: e5820fa03fda943a6b730b6a381f8b1a
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bone-5
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture-2
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture-3
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture-4
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture-5
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture-6
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Suture-7
+    second: {fileID: 2100000, guid: 15952bc46f404416d819d56b8ba79cc6, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

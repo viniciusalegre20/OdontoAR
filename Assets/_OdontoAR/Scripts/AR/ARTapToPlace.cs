@@ -10,18 +10,23 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 namespace OdontoAR.AR
 {
     /// <summary>
-    /// RF01/RF02: enquanto a arcada não está posicionada, um toque curto sobre um plano detectado
-    /// coloca o modelo ali, de frente para o aluno. Depois disso os toques ficam livres para os gestos
+    /// RF01/RF02: enquanto a arcada não está posicionada, uma mira acompanha o centro da tela sobre
+    /// a superfície horizontal detectada; um toque curto em qualquer lugar coloca a arcada na mira,
+    /// de frente para o aluno e ancorada ao plano. Depois disso os toques ficam livres para os gestos
     /// (e, na T7, para a seleção); "Reposicionar" volta a este modo.
     /// </summary>
     public sealed class ARTapToPlace : MonoBehaviour
     {
         [SerializeField] ARRaycastManager raycastManager;
         [SerializeField] ARPlaneManager planeManager;
+        [SerializeField] ARAnchorManager anchorManager;
         [SerializeField] ModelStateHolder holder;
         [SerializeField] Camera arCamera;
 
-        [Tooltip("Visível enquanto a arcada não foi posicionada (dica \"toque na mesa\").")]
+        [Tooltip("Mira mostrada sobre a mesa, onde a arcada será colocada.")]
+        [SerializeField] Transform reticle;
+
+        [Tooltip("Visível enquanto a arcada não foi posicionada (dica \"aponte para a mesa\").")]
         [SerializeField] GameObject placementHint;
 
         [Tooltip("Visível só com a arcada posicionada (Restaurar vista, Reposicionar).")]
@@ -30,9 +35,22 @@ namespace OdontoAR.AR
         [SerializeField] float maxTapSeconds = 0.35f;
         [SerializeField] float maxTapMovementPixels = 30f;
 
+        [Tooltip("Quanto a normal da superfície pode se afastar da vertical (graus).")]
+        [SerializeField] float maxSurfaceTiltDegrees = 15f;
+
+        [Tooltip("A superfície precisa estar pelo menos isto abaixo da câmera (m), para ignorar tetos.")]
+        [SerializeField] float minDistanceBelowCamera = 0.1f;
+
+        const TrackableType RaycastTypes = TrackableType.PlaneWithinPolygon | TrackableType.PlaneEstimated;
+
         static readonly List<ARRaycastHit> s_Hits = new();
 
         Transform ModelRoot => holder.transform;
+
+        bool hasTarget;
+        Pose targetPose;
+        ARPlane targetPlane;
+        ARAnchor anchor;
 
         void OnEnable()
         {
@@ -62,9 +80,51 @@ namespace OdontoAR.AR
             holder.State.SetPlaced(false);
         }
 
-        void OnFingerUp(Finger finger)
+        void Update()
         {
             if (holder.State.IsPlaced)
+                return;
+
+            var screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            hasTarget = TryFindSurface(screenCenter, out targetPose, out targetPlane);
+
+            reticle.gameObject.SetActive(hasTarget);
+            if (hasTarget)
+                reticle.SetPositionAndRotation(targetPose.position, targetPose.rotation);
+        }
+
+        bool TryFindSurface(Vector2 screenPoint, out Pose pose, out ARPlane plane)
+        {
+            pose = default;
+            plane = null;
+
+            if (!raycastManager.Raycast(screenPoint, s_Hits, RaycastTypes))
+                return false;
+
+            var cameraHeight = arCamera.transform.position.y;
+            var minUpDot = Mathf.Cos(maxSurfaceTiltDegrees * Mathf.Deg2Rad);
+
+            // Os acertos vêm do mais próximo para o mais distante: fica com a primeira superfície
+            // horizontal, voltada para cima e abaixo da câmera (a mesa, não teto nem parede).
+            foreach (var hit in s_Hits)
+            {
+                var hitPose = hit.pose;
+                if (Vector3.Dot(hitPose.up, Vector3.up) < minUpDot)
+                    continue;
+                if (hitPose.position.y > cameraHeight - minDistanceBelowCamera)
+                    continue;
+
+                pose = new Pose(hitPose.position, FacingCamera(hitPose.position));
+                plane = hit.trackable as ARPlane;
+                return true;
+            }
+
+            return false;
+        }
+
+        void OnFingerUp(Finger finger)
+        {
+            if (holder.State.IsPlaced || !hasTarget)
                 return;
 
             var touch = finger.lastTouch;
@@ -76,34 +136,52 @@ namespace OdontoAR.AR
             if (UIHitTest.IsOverUI(touch.startScreenPosition))
                 return;
 
-            if (!raycastManager.Raycast(touch.screenPosition, s_Hits, TrackableType.PlaneWithinPolygon))
-                return;
-
-            Place(s_Hits[0].pose);
+            Place(targetPose, targetPlane);
         }
 
-        void Place(Pose pose)
+        void Place(Pose pose, ARPlane plane)
         {
-            // Frente do modelo (+Z) voltada para a câmera, sem inclinar.
-            var toCamera = arCamera.transform.position - pose.position;
-            toCamera.y = 0f;
-            var rotation = toCamera.sqrMagnitude > 1e-6f
-                ? Quaternion.LookRotation(toCamera.normalized, Vector3.up)
-                : pose.rotation;
+            // Ancorada ao plano, a arcada acompanha os ajustes que o ARKit faz na altura da mesa.
+            if (plane != null)
+                anchor = anchorManager.AttachAnchor(plane, pose);
 
-            ModelRoot.SetPositionAndRotation(pose.position, rotation);
+            ModelRoot.SetParent(anchor != null ? anchor.transform : null, true);
+            ModelRoot.SetPositionAndRotation(pose.position, pose.rotation);
             holder.State.SetPlaced(true);
+        }
+
+        /// <summary>Frente do modelo (+Z) voltada para a câmera, sem inclinar.</summary>
+        Quaternion FacingCamera(Vector3 position)
+        {
+            var toCamera = arCamera.transform.position - position;
+            toCamera.y = 0f;
+            return toCamera.sqrMagnitude > 1e-6f
+                ? Quaternion.LookRotation(toCamera.normalized, Vector3.up)
+                : Quaternion.identity;
+        }
+
+        void ReleaseAnchor()
+        {
+            ModelRoot.SetParent(null, true);
+            if (anchor == null)
+                return;
+
+            Destroy(anchor.gameObject);
+            anchor = null;
         }
 
         void ApplyPlacedState()
         {
             var placed = holder.State.IsPlaced;
+            if (!placed)
+                ReleaseAnchor();
 
             ModelRoot.gameObject.SetActive(placed);
+            reticle.gameObject.SetActive(false);
+            hasTarget = false;
 
-            // Com a arcada na mesa, os planos somem e a detecção para (menos ruído visual e de CPU).
+            // Com a arcada na mesa, a detecção de planos para (os planos já são invisíveis).
             planeManager.enabled = !placed;
-            planeManager.SetTrackablesActive(!placed);
 
             if (placementHint != null)
                 placementHint.SetActive(!placed);

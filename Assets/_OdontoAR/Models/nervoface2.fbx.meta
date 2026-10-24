@@ -3,7 +3,22 @@ guid: 5db0c3eb715aa4b058dbbef98acea82a
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nerve-4
+    second: {fileID: 2100000, guid: 052dcae3042364f8a954a167ffb858cb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nerve-8
+    second: {fileID: 2100000, guid: 052dcae3042364f8a954a167ffb858cb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Nucleus (efferent fibers)
+    second: {fileID: 2100000, guid: 052dcae3042364f8a954a167ffb858cb, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

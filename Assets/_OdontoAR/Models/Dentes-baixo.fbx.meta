@@ -3,7 +3,22 @@ guid: a7e132ef29a244f71ab14427a10f156a
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Dentine
+    second: {fileID: 2100000, guid: 0c31e1643fbde4d48b6046486005c07d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Teeth
+    second: {fileID: 2100000, guid: 1490b25abfdbe4d23ae5e5feecc3eb2f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Teeth-roots
+    second: {fileID: 2100000, guid: 0c31e1643fbde4d48b6046486005c07d, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
