@@ -389,7 +389,7 @@ namespace OdontoAR.Editor
             hintImage.raycastTarget = false;
 
             var hintText = CreateText(hint.transform,
-                "Aponte para a mesa e mova o iPhone devagar. Quando o círculo aparecer, toque na tela para posicionar a arcada.", 44f,
+                "Afaste-se um pouco e aponte para a mesa, movendo o iPhone devagar. Quando o círculo aparecer, toque na tela para posicionar a arcada.", 44f,
                 OdontoARTheme.TextOnOverlay);
             var hintTextRect = (RectTransform)hintText.transform;
             hintTextRect.anchorMin = Vector2.zero;

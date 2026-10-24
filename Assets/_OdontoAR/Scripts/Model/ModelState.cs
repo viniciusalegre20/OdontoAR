@@ -9,9 +9,9 @@ namespace OdontoAR.Model
     /// </summary>
     public sealed class ModelState
     {
-        public const float DefaultScale = 2f;
+        public const float DefaultScale = 1f;
         public const float MinScale = 0.5f;
-        public const float MaxScale = 6f;
+        public const float MaxScale = 4f;
         public const float MaxPitch = 80f;
 
         /// <summary>Disparado sempre que algum valor muda.</summary>
