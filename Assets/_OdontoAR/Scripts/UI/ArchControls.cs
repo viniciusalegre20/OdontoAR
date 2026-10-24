@@ -1,5 +1,4 @@
 using OdontoAR.Model;
-using OdontoAR.Theme;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,24 +39,12 @@ namespace OdontoAR.UI
         {
             var state = holder.State;
 
-            Highlight(bothButton, state.Arch == ArchSelection.Both);
-            Highlight(upperButton, state.Arch == ArchSelection.Upper);
-            Highlight(lowerButton, state.Arch == ArchSelection.Lower);
+            ButtonStyle.SetSelected(bothButton, state.Arch == ArchSelection.Both);
+            ButtonStyle.SetSelected(upperButton, state.Arch == ArchSelection.Upper);
+            ButtonStyle.SetSelected(lowerButton, state.Arch == ArchSelection.Lower);
 
             openingSlider.SetValueWithoutNotify(state.Opening);
             openingSlider.interactable = state.Arch == ArchSelection.Both;
-        }
-
-        static void Highlight(Button button, bool selected)
-        {
-            button.image.color = selected ? OdontoARTheme.ButtonSelectedBackground : OdontoARTheme.ButtonBackground;
-
-            // O rótulo (TMP) é um Graphic filho do botão.
-            foreach (var graphic in button.GetComponentsInChildren<Graphic>(true))
-            {
-                if (graphic != button.image)
-                    graphic.color = selected ? OdontoARTheme.ButtonSelectedText : OdontoARTheme.ButtonText;
-            }
         }
     }
 }

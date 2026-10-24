@@ -37,6 +37,15 @@ namespace OdontoAR.Theme
         public static readonly Color Bone = new(0.86f, 0.78f, 0.64f, 1f);       // maxila e mandíbula: bege
         public static readonly Color Nerve = new(0.18f, 0.45f, 0.92f, 1f);      // nervos: azul
 
+        // Opacidades (RF08). O osso é sempre translúcido; com osso ou nervos visíveis,
+        // coroa e raiz ficam translúcidas para mostrar o que está por dentro.
+        public const float BoneOpacity = 0.35f;
+        public const float IntegratedCrownOpacity = 0.55f;
+        public const float IntegratedRootOpacity = 0.70f;
+
+        // Material de camada oculta (submesh do dente que não deve aparecer).
+        public static readonly Color Hidden = new(0f, 0f, 0f, 0f);
+
         // Acabamento das estruturas (URP Lit: 0 = fosco, 1 = espelhado).
         public const float ToothSmoothness = 0.6f;
         public const float BoneSmoothness = 0.25f;

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OdontoAR.AR;
+using OdontoAR.Diagnostics;
 using OdontoAR.Model;
 using OdontoAR.Theme;
 using OdontoAR.UI;
@@ -22,7 +23,7 @@ using UnityEngine.XR.ARSubsystems;
 namespace OdontoAR.Editor
 {
     /// <summary>
-    /// T3/T4: aplica os materiais dos modelos e gera Prefabs/Arcadas.prefab (a partir dos FBX),
+    /// T3–T6: aplica os materiais dos modelos e gera Prefabs/Arcadas.prefab (a partir dos FBX),
     /// Prefabs/PlanoAR.prefab (invisível), a mira de posicionamento e Scenes/AR.unity já ligados
     /// entre si, e coloca a cena AR como a única do build.
     /// Recria tudo a cada execução. Por terminal:
@@ -106,6 +107,7 @@ namespace OdontoAR.Editor
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             CreateLight();
+            new GameObject("MonitorFPS", typeof(FrameRateMonitor));
             new GameObject("AR Session", typeof(ARSession), typeof(ARInputManager));
 
             var (origin, arCamera) = CreateXROrigin();
@@ -143,6 +145,13 @@ namespace OdontoAR.Editor
             SetReference(archControls, "upperButton", ui.UpperButton);
             SetReference(archControls, "lowerButton", ui.LowerButton);
             SetReference(archControls, "openingSlider", ui.OpeningSlider);
+
+            var layerControls = ui.PlacedControls.AddComponent<LayerControls>();
+            SetReference(layerControls, "holder", holder);
+            SetReference(layerControls, "crownButton", ui.CrownButton);
+            SetReference(layerControls, "rootButton", ui.RootButton);
+            SetReference(layerControls, "boneButton", ui.BoneButton);
+            SetReference(layerControls, "nervesButton", ui.NervesButton);
 
             UnityEventTools.AddPersistentListener(ui.ResetButton.onClick, holder.ResetView);
             UnityEventTools.AddPersistentListener(ui.RepositionButton.onClick, tapToPlace.Reposition);
@@ -207,6 +216,20 @@ namespace OdontoAR.Editor
                 SetReference(arch, "lowerArch", inferior);
                 SetReference(arch, "jawHinge", hinge.transform);
 
+                var layers = root.AddComponent<LayerController>();
+                SetReference(layers, "holder", holder);
+                SetReference(layers, "crown", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.CrownPath));
+                SetReference(layers, "crownTranslucent",
+                    AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.CrownTranslucentPath));
+                SetReference(layers, "root", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.RootPath));
+                SetReference(layers, "rootTranslucent",
+                    AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.RootTranslucentPath));
+                SetReference(layers, "hidden", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.HiddenPath));
+                SetArray(layers, "teeth", RenderersOf(superior, "Dentes_Superiores")
+                    .Concat(RenderersOf(inferior, "Dentes_Inferiores")));
+                SetArray(layers, "bone", RenderersOf(superior, "Maxila").Concat(RenderersOf(inferior, "Mandibula")));
+                SetArray(layers, "nerves", RenderersOf(modelo, "Nervos"));
+
                 modelo.transform.localPosition = -bounds.center;
                 SetReference(view, "holder", holder);
                 SetFloat(view, "baseHalfHeight", bounds.extents.y);
@@ -223,6 +246,9 @@ namespace OdontoAR.Editor
                 Object.DestroyImmediate(root);
             }
         }
+
+        static IEnumerable<Renderer> RenderersOf(GameObject parent, string child) =>
+            parent.transform.Find(child).GetComponentsInChildren<Renderer>(true);
 
         static Bounds RendererBounds(IEnumerable<Renderer> renderers)
         {
@@ -459,6 +485,10 @@ namespace OdontoAR.Editor
             public Button UpperButton;
             public Button LowerButton;
             public Slider OpeningSlider;
+            public Button CrownButton;
+            public Button RootButton;
+            public Button BoneButton;
+            public Button NervesButton;
         }
 
         static UIRefs CreateCanvas()
@@ -514,6 +544,13 @@ namespace OdontoAR.Editor
             column.childForceExpandHeight = false;
             controls.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
+            // Camadas (RF08).
+            var layersRow = CreateRow(controls.transform, "Camadas", 110f, 16f);
+            var crown = CreateButton(layersRow.transform, resources, "BotaoCoroa", "Coroa");
+            var root = CreateButton(layersRow.transform, resources, "BotaoRaiz", "Raiz");
+            var bone = CreateButton(layersRow.transform, resources, "BotaoOsso", "Osso");
+            var nerves = CreateButton(layersRow.transform, resources, "BotaoNervos", "Nervos");
+
             // Abertura da boca (RF06).
             var openingRow = CreateRow(controls.transform, "Abertura", 110f, 30f);
             var openingImage = openingRow.AddComponent<Image>();
@@ -549,6 +586,10 @@ namespace OdontoAR.Editor
                 UpperButton = upper,
                 LowerButton = lower,
                 OpeningSlider = opening,
+                CrownButton = crown,
+                RootButton = root,
+                BoneButton = bone,
+                NervesButton = nerves,
             };
         }
 
@@ -677,6 +718,17 @@ namespace OdontoAR.Editor
         {
             var serialized = new SerializedObject(target);
             serialized.FindProperty(field).objectReferenceValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        static void SetArray(Object target, string field, IEnumerable<Object> values)
+        {
+            var list = values.ToList();
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(field);
+            property.arraySize = list.Count;
+            for (var i = 0; i < list.Count; i++)
+                property.GetArrayElementAtIndex(i).objectReferenceValue = list[i];
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 

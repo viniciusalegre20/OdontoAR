@@ -11,9 +11,18 @@ namespace OdontoAR.Model
         Lower,
     }
 
+    /// <summary>Camadas anatômicas (RF08).</summary>
+    public enum Layer
+    {
+        Crown,
+        Root,
+        Bone,
+        Nerves,
+    }
+
     /// <summary>
     /// Estado do modelo, sem MonoBehaviour (testável em EditMode):
-    /// posicionamento, rotação, escala, arcada visível e abertura da boca.
+    /// posicionamento, rotação, escala, arcada visível, abertura da boca e camadas.
     /// </summary>
     public sealed class ModelState
     {
@@ -40,6 +49,9 @@ namespace OdontoAR.Model
 
         /// <summary>Abertura da boca (RF06): 0 = fechada, 1 = abertura máxima.</summary>
         public float Opening { get; private set; }
+
+        // Todas as camadas começam visíveis (visualização integrada).
+        readonly bool[] layerVisible = { true, true, true, true };
 
         public void SetPlaced(bool placed)
         {
@@ -101,9 +113,26 @@ namespace OdontoAR.Model
             Changed?.Invoke();
         }
 
+        public bool IsLayerVisible(Layer layer) => IsValid(layer) && layerVisible[(int)layer];
+
+        public void SetLayerVisible(Layer layer, bool visible)
+        {
+            if (!IsValid(layer) || layerVisible[(int)layer] == visible)
+                return;
+
+            layerVisible[(int)layer] = visible;
+            Changed?.Invoke();
+        }
+
+        public void ToggleLayer(Layer layer)
+        {
+            if (IsValid(layer))
+                SetLayerVisible(layer, !layerVisible[(int)layer]);
+        }
+
         /// <summary>
         /// "Restaurar vista" (RF07): volta rotação e escala ao padrão, sem mover o modelo.
-        /// Arcada e abertura ficam como o aluno deixou.
+        /// Arcada, abertura e camadas ficam como o aluno deixou.
         /// </summary>
         public void ResetView()
         {
@@ -112,6 +141,8 @@ namespace OdontoAR.Model
             Scale = DefaultScale;
             Changed?.Invoke();
         }
+
+        static bool IsValid(Layer layer) => Enum.IsDefined(typeof(Layer), layer);
 
         static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
     }

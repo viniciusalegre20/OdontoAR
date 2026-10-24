@@ -49,7 +49,8 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 - 🤖 `Editor/ModelValidator.cs` (menu `OdontoAR/Validar modelo`): lista objetos que não mapeiam para FDI, dentes sem os materiais de coroa/raiz, malhas sem collider.
 - **Aceite:** validador sem erros nos FBX (os 4 terceiros molares ausentes são listados, não são erro).
 
-### T6 — Camadas (RF08)
+### T6 — Camadas (RF08) ✅ (24/10)
+> Medido no 16 Pro Max com tudo ligado: 60 FPS médio, pior quadro ~31 FPS (`FrameRateMonitor` no log).
 - 🤖 `LayerController`: 4 camadas — **coroa** e **raiz** (por material/submesh dos dentes), **osso** (maxila + mandíbula, sempre translúcido) e **nervos** (`nervoface2.fbx`). Cores de `OdontoARTheme`, liga/desliga a partir do `ModelState`.
 - 🤖 Visualização integrada: com osso ou nervos visíveis, coroa a 55% e raiz a 70%.
 - **Aceite:** 4 toggles funcionam no iPhone; FPS ≥ 30 com tudo ligado.

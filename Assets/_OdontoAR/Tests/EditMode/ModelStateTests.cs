@@ -155,5 +155,49 @@ namespace OdontoAR.Tests
             Assert.AreEqual(ArchSelection.Upper, state.Arch);
             Assert.AreEqual(0.7f, state.Opening, 1e-5f);
         }
+
+        [Test]
+        public void TodasAsCamadasComecamVisiveis()
+        {
+            foreach (Layer layer in System.Enum.GetValues(typeof(Layer)))
+                Assert.IsTrue(state.IsLayerVisible(layer), layer.ToString());
+        }
+
+        [Test]
+        public void SetLayerVisibleSoNotificaQuandoMuda()
+        {
+            state.SetLayerVisible(Layer.Bone, false);
+            state.SetLayerVisible(Layer.Bone, false);
+            Assert.IsFalse(state.IsLayerVisible(Layer.Bone));
+            Assert.IsTrue(state.IsLayerVisible(Layer.Crown));
+            Assert.AreEqual(1, changes);
+        }
+
+        [Test]
+        public void ToggleLayerAlterna()
+        {
+            state.ToggleLayer(Layer.Nerves);
+            Assert.IsFalse(state.IsLayerVisible(Layer.Nerves));
+            state.ToggleLayer(Layer.Nerves);
+            Assert.IsTrue(state.IsLayerVisible(Layer.Nerves));
+            Assert.AreEqual(2, changes);
+        }
+
+        [Test]
+        public void CamadaInvalidaEIgnorada()
+        {
+            state.SetLayerVisible((Layer)99, false);
+            state.ToggleLayer((Layer)99);
+            Assert.IsFalse(state.IsLayerVisible((Layer)99));
+            Assert.AreEqual(0, changes);
+        }
+
+        [Test]
+        public void RestaurarVistaMantemCamadas()
+        {
+            state.SetLayerVisible(Layer.Root, false);
+            state.ResetView();
+            Assert.IsFalse(state.IsLayerVisible(Layer.Root));
+        }
     }
 }
