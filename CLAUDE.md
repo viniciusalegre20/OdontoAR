@@ -40,12 +40,19 @@ Assemblies: `OdontoAR` (Scripts/), `OdontoAR.Editor` (Editor/), `OdontoAR.Tests.
 - Testar no aparelho e relatar o resultado.
 
 ## Comandos
+O projeto fica em `~/Developer/OdontoAR`, **fora do iCloud**: em `~/Documents` (sincronizado) o iCloud criava cópias "arquivo 2.cpp" durante o build e o link do IL2CPP falhava.
+
 Modo batch exige o Unity Hub logado com licença ativa (sem isso, sai com código 198).
 O build iOS exige o **Xcode** instalado e selecionado (`xcode-select -p` → `/Applications/Xcode.app/...`); só com as Command Line Tools o build falha em `actool`.
 - Build iOS por terminal (após T2):
   `"/Applications/Unity/Hub/Editor/6000.6.4f1/Unity.app/Contents/MacOS/Unity" -batchmode -quit -projectPath . -executeMethod OdontoAR.Editor.BuildScript.BuildIOS -logFile Builds/build.log`
-- Testes EditMode:
-  `... -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults Builds/tests.xml`
+- Menus `OdontoAR/...` por terminal: `-batchmode -projectPath . -executeMethod OdontoAR.Editor.<Classe>.<Método>` **sem `-quit`** (os métodos chamam `EditorApplication.Exit`; o de criar cena espera uma importação assíncrona).
+- Testes EditMode (sem `-quit`):
+  `... -batchmode -projectPath . -runTests -testPlatform EditMode -testResults Builds/tests.xml`
+- Compilar, assinar e instalar no iPhone (após o build iOS; UDID em `xcrun devicectl list devices`):
+  `cd Builds/iOS && xcodebuild -project Unity-iPhone.xcodeproj -scheme Unity-iPhone -configuration Release -destination 'id=<UDID>' -allowProvisioningUpdates -derivedDataPath ../DerivedData build`
+  `xcrun devicectl device install app --device <UDID> Builds/DerivedData/Build/Products/Release-iphoneos/OdontoAR.app`
+  `xcrun devicectl device process launch --device <UDID> com.auraworks.odontoar`
 
 ## Commits
 Um commit por tarefa, mensagem em português: `T4: porta gestos do protótipo para RA`.
