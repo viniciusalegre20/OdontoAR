@@ -24,6 +24,10 @@ namespace OdontoAR.Editor
         public const string CompanyName = "Aura Works";
         public const string BundleId = "com.auraworks.odontoar";
         public const string MinimumIOSVersion = "15.0";
+
+        // Personal Team do Apple ID usado para assinar (Xcode → Settings → Accounts).
+        // Outro membro da equipe que for assinar troca pelo próprio Team ID.
+        public const string AppleTeamId = "9BVJCCNT6Z";
         public const string CameraUsageDescription =
             "O OdontoAR usa a câmera para exibir a arcada dentária em realidade aumentada sobre a mesa.";
 
@@ -72,7 +76,10 @@ namespace OdontoAR.Editor
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS, BundleId);
             PlayerSettings.iOS.cameraUsageDescription = CameraUsageDescription;
             PlayerSettings.iOS.targetOSVersionString = MinimumIOSVersion;
-            Debug.Log($"[OdontoAR] Player: {ProductName} ({BundleId}), iOS mínimo {MinimumIOSVersion}.");
+            PlayerSettings.iOS.appleEnableAutomaticSigning = true;
+            PlayerSettings.iOS.appleDeveloperTeamID = AppleTeamId;
+            Debug.Log($"[OdontoAR] Player: {ProductName} ({BundleId}), iOS mínimo {MinimumIOSVersion}, " +
+                      $"assinatura automática (time {AppleTeamId}).");
         }
 
         static void ConfigureInputHandling()

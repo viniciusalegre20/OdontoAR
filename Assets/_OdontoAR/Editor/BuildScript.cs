@@ -7,7 +7,7 @@ using UnityEngine;
 namespace OdontoAR.Editor
 {
     /// <summary>
-    /// Gera o projeto Xcode em Builds/iOS (T2). Por terminal:
+    /// Gera o projeto Xcode em Builds/iOS (T2), sempre do zero. Por terminal:
     /// -executeMethod OdontoAR.Editor.BuildScript.BuildIOS
     /// Em modo batch, sai com código 0 em sucesso e 1 em erro.
     /// </summary>
@@ -51,9 +51,10 @@ namespace OdontoAR.Editor
                 options = BuildOptions.None,
             };
 
-            // Se o projeto Xcode já existe, faz "append" para preservar a assinatura feita no Xcode.
-            if (Directory.Exists(Path.Combine(IOSOutputPath, "Unity-iPhone.xcodeproj")))
-                options.options |= BuildOptions.AcceptExternalModificationsToPlayer;
+            // Sempre do zero: o "append" deixou o código do IL2CPP incompleto (símbolos indefinidos no link).
+            // Assinatura e ajustes do Xcode vêm do ProjectSetup e do IOSPostProcess, não de edições à mão.
+            if (Directory.Exists(IOSOutputPath))
+                Directory.Delete(IOSOutputPath, true);
 
             Debug.Log($"[OdontoAR] Build iOS: {string.Join(", ", scenes)} → {IOSOutputPath}");
             var summary = BuildPipeline.BuildPlayer(options).summary;
