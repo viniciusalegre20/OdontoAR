@@ -1,10 +1,13 @@
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.XR.ARKit;
 using UnityEditor.XR.Management;
 using UnityEditor.XR.Management.Metadata;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARKit;
 using UnityEngine.XR.Management;
 
@@ -28,6 +31,13 @@ namespace OdontoAR.Editor
         const string XRSettingsPath = XRFolder + "/XRGeneralSettingsPerBuildTarget.asset";
         const string ARKitSettingsPath = XRFolder + "/Settings/ARKitSettings.asset";
 
+        // Renderers do URP que precisam desenhar a imagem da câmera (Mobile = iPhone, PC = Editor).
+        static readonly string[] RendererPaths =
+        {
+            "Assets/Settings/Mobile_Renderer.asset",
+            "Assets/Settings/PC_Renderer.asset",
+        };
+
         // Valor de "Active Input Handling" que corresponde a "Input System Package (New)".
         const int InputSystemOnly = 1;
 
@@ -40,6 +50,7 @@ namespace OdontoAR.Editor
             ConfigureInputHandling();
             ok &= ConfigureXRManagement();
             ConfigureARKit();
+            ok &= ConfigureURPForAR();
             AssetDatabase.SaveAssets();
 
             // Por último, porque reimporta o projeto.
@@ -115,7 +126,7 @@ namespace OdontoAR.Editor
 
         static XRGeneralSettingsPerBuildTarget GetOrCreateXRSettings()
         {
-            if (EditorBuildSettings.TryGetConfigObject(XRGeneralSettings.k_SettingsKey,
+            if (EditorBuildSettings.TryGetConfigObject(XRGeneralSettings.settingsKey,
                     out XRGeneralSettingsPerBuildTarget existing) && existing != null)
                 return existing;
 
@@ -133,7 +144,7 @@ namespace OdontoAR.Editor
                 AssetDatabase.CreateAsset(existing, XRSettingsPath);
             }
 
-            EditorBuildSettings.AddConfigObject(XRGeneralSettings.k_SettingsKey, existing, true);
+            EditorBuildSettings.AddConfigObject(XRGeneralSettings.settingsKey, existing, true);
             return existing;
         }
 
@@ -152,6 +163,45 @@ namespace OdontoAR.Editor
             settings.faceTracking = false;
             EditorUtility.SetDirty(settings);
             Debug.Log("[OdontoAR] ARKit: Required, sem face tracking.");
+        }
+
+        static bool ConfigureURPForAR()
+        {
+            var ok = true;
+            foreach (var path in RendererPaths)
+            {
+                var data = AssetDatabase.LoadAssetAtPath<ScriptableRendererData>(path);
+                if (data == null)
+                {
+                    Debug.LogError($"[OdontoAR] Renderer do URP não encontrado: {path}");
+                    ok = false;
+                    continue;
+                }
+
+                if (data.rendererFeatures.Any(f => f is ARBackgroundRendererFeature))
+                    continue;
+
+                // Mesmo procedimento do botão "Add Renderer Feature" do Inspector:
+                // sub-asset + lista de features + mapa de IDs locais.
+                var feature = ScriptableObject.CreateInstance<ARBackgroundRendererFeature>();
+                feature.name = nameof(ARBackgroundRendererFeature);
+                AssetDatabase.AddObjectToAsset(feature, data);
+                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(feature, out _, out long localId);
+
+                var serialized = new SerializedObject(data);
+                var features = serialized.FindProperty("m_RendererFeatures");
+                var map = serialized.FindProperty("m_RendererFeatureMap");
+                features.arraySize++;
+                features.GetArrayElementAtIndex(features.arraySize - 1).objectReferenceValue = feature;
+                map.arraySize++;
+                map.GetArrayElementAtIndex(map.arraySize - 1).longValue = localId;
+                serialized.ApplyModifiedProperties();
+                EditorUtility.SetDirty(data);
+
+                Debug.Log($"[OdontoAR] AR Background Renderer Feature adicionada em {path}.");
+            }
+
+            return ok;
         }
 
         static bool SwitchToIOS()

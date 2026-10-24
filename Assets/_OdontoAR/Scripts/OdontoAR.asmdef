@@ -1,7 +1,12 @@
 {
     "name": "OdontoAR",
     "rootNamespace": "OdontoAR",
-    "references": [],
+    "references": [
+        "Unity.InputSystem",
+        "Unity.XR.ARFoundation",
+        "Unity.XR.ARSubsystems",
+        "UnityEngine.UI"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

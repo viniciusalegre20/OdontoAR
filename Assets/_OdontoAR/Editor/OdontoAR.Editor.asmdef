@@ -3,10 +3,17 @@
     "rootNamespace": "OdontoAR.Editor",
     "references": [
         "OdontoAR",
+        "Unity.InputSystem",
         "Unity.XR.Management",
         "Unity.XR.Management.Editor",
         "Unity.XR.ARKit",
-        "Unity.XR.ARKit.Editor"
+        "Unity.XR.ARKit.Editor",
+        "Unity.XR.ARFoundation",
+        "Unity.XR.ARSubsystems",
+        "Unity.XR.CoreUtils",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"

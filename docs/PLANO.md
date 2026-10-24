@@ -27,7 +27,8 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 ### T3 — Cena de RA
 - 🤖 `Editor/ARSceneBuilder.cs` (menu `OdontoAR/Criar cena AR`): cria `Scenes/AR.unity` com XR Origin, AR Session, ARPlaneManager (horizontal), ARRaycastManager, EventSystem com InputSystemUIInputModule, Canvas.
 - 🤖 Escrever `ARTapToPlace` e `ModelGestures` em `Scripts/AR/` (EnhancedTouch).
-- 🧑 Rodar o menu, arrastar o prefab da arcada no Inspector, build e rodar no iPhone.
+- 🤖 O menu também gera `Prefabs/Arcadas.prefab` a partir dos FBX e liga todas as referências (nada a arrastar no Inspector).
+- 🧑 Abrir `Builds/iOS/Unity-iPhone.xcodeproj` no Xcode, assinar com o Apple ID e rodar no iPhone.
 - **Aceite (RF01, RF02, RF04, RF05, RF07):** toque posiciona a arcada na mesa; 1 dedo gira; pinça amplia; "Restaurar vista" funciona.
 
 ### T4 — Estado do modelo e arcadas
