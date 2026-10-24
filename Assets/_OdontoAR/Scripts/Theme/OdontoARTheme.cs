@@ -21,6 +21,9 @@ namespace OdontoAR.Theme
         // Mira de posicionamento sobre a mesa.
         public static readonly Color PlacementReticle = new(1f, 1f, 1f, 0.9f);
 
+        // Sombra de contato sob a arcada (o alfa é a opacidade no centro).
+        public static readonly Color ContactShadow = new(0f, 0f, 0f, 0.45f);
+
         // Estruturas anatômicas.
         public static readonly Color ToothCrown = new(0.96f, 0.95f, 0.90f, 1f); // esmalte: marfim
         public static readonly Color ToothRoot = new(0.91f, 0.82f, 0.62f, 1f);  // raiz e dentina: amarelada

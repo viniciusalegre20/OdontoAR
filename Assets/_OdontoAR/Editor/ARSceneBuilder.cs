@@ -39,6 +39,11 @@ namespace OdontoAR.Editor
         const string PlanePrefabPath = PrefabsFolder + "/PlanoAR.prefab";
         const string ReticleMaterialPath = MaterialsFolder + "/MiraPosicionamento.mat";
         const string ReticleMeshPath = ModelsFolder + "/MiraPosicionamento.asset";
+        const string ShadowMaterialPath = MaterialsFolder + "/SombraContato.mat";
+        const string ShadowTexturePath = MaterialsFolder + "/SombraContato.png";
+
+        // A sombra cobre a projeção das arcadas na mesa com uma folga, para o degradê sumir fora dela.
+        const float ContactShadowMargin = 1.4f;
 
         // Anel da mira, em metros.
         const float ReticleInnerRadius = 0.045f;
@@ -183,12 +188,59 @@ namespace OdontoAR.Editor
                 SetReference(view, "holder", holder);
                 SetFloat(view, "baseHalfHeight", bounds.extents.y);
 
+                var shadow = CreateContactShadow(root);
+                SetReference(view, "contactShadow", shadow);
+                SetVector2(view, "contactShadowBaseSize",
+                    new Vector2(bounds.size.x, bounds.size.z) * ContactShadowMargin);
+
                 return PrefabUtility.SaveAsPrefabAsset(root, ArcadasPrefabPath);
             }
             finally
             {
                 Object.DestroyImmediate(root);
             }
+        }
+
+        /// <summary>Quad deitado na mesa com um degradê radial escuro: "assenta" a arcada na superfície.</summary>
+        static Transform CreateContactShadow(GameObject root)
+        {
+            var go = new GameObject("SombraContato", typeof(MeshFilter), typeof(MeshRenderer));
+            go.transform.SetParent(root.transform, false);
+            go.transform.localPosition = new Vector3(0f, 0.0005f, 0f);
+            go.GetComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
+
+            var meshRenderer = go.GetComponent<MeshRenderer>();
+            meshRenderer.sharedMaterial = BuildTransparentUnlit(
+                ShadowMaterialPath, OdontoARTheme.ContactShadow, BuildShadowTexture());
+            meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            meshRenderer.receiveShadows = false;
+            return go.transform;
+        }
+
+        /// <summary>Textura branca com alfa radial (1 no centro, 0 na borda), tingida pelo material.</summary>
+        static Texture2D BuildShadowTexture()
+        {
+            const int size = 128;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            for (var y = 0; y < size; y++)
+            for (var x = 0; x < size; x++)
+            {
+                var dx = (x + 0.5f) / size * 2f - 1f;
+                var dy = (y + 0.5f) / size * 2f - 1f;
+                var alpha = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Sqrt(dx * dx + dy * dy));
+                texture.SetPixel(x, y, new Color(1f, 1f, 1f, alpha * alpha));
+            }
+
+            File.WriteAllBytes(ShadowTexturePath, texture.EncodeToPNG());
+            Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(ShadowTexturePath);
+
+            var importer = (TextureImporter)AssetImporter.GetAtPath(ShadowTexturePath);
+            importer.alphaIsTransparency = true;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.mipmapEnabled = false;
+            importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(ShadowTexturePath);
         }
 
         static bool AddModel(GameObject parent, string file, string name)
@@ -275,13 +327,16 @@ namespace OdontoAR.Editor
             return mesh;
         }
 
-        static Material BuildReticleMaterial()
+        static Material BuildReticleMaterial() =>
+            BuildTransparentUnlit(ReticleMaterialPath, OdontoARTheme.PlacementReticle, null);
+
+        static Material BuildTransparentUnlit(string path, Color color, Texture2D texture)
         {
-            var material = AssetDatabase.LoadAssetAtPath<Material>(ReticleMaterialPath);
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null)
             {
                 material = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-                AssetDatabase.CreateAsset(material, ReticleMaterialPath);
+                AssetDatabase.CreateAsset(material, path);
             }
 
             // URP Unlit transparente (Alpha blend), sem escrita de profundidade.
@@ -294,7 +349,8 @@ namespace OdontoAR.Editor
             material.SetOverrideTag("RenderType", "Transparent");
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
             material.SetFloat("_Cull", (float)UnityEngine.Rendering.CullMode.Off);
-            material.SetColor("_BaseColor", OdontoARTheme.PlacementReticle);
+            material.SetColor("_BaseColor", color);
+            material.SetTexture("_BaseMap", texture);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -318,9 +374,18 @@ namespace OdontoAR.Editor
 
             var cameraGo = new GameObject("Main Camera",
                 typeof(Camera), typeof(AudioListener),
-                typeof(ARCameraManager), typeof(ARCameraBackground), typeof(TrackedPoseDriver));
+                typeof(ARCameraManager), typeof(ARCameraBackground), typeof(TrackedPoseDriver),
+                typeof(AROcclusionManager));
             cameraGo.transform.SetParent(offset.transform, false);
             cameraGo.tag = "MainCamera";
+
+            // Oclusão com a profundidade do LiDAR: mão e objetos reais à frente escondem a arcada.
+            // Em aparelhos sem LiDAR o subsistema não oferece profundidade e nada acontece (T10).
+            var occlusion = cameraGo.GetComponent<AROcclusionManager>();
+            occlusion.requestedEnvironmentDepthMode = EnvironmentDepthMode.Best;
+            occlusion.requestedOcclusionPreferenceMode = OcclusionPreferenceMode.PreferEnvironmentOcclusion;
+            occlusion.requestedHumanStencilMode = HumanSegmentationStencilMode.Disabled;
+            occlusion.requestedHumanDepthMode = HumanSegmentationDepthMode.Disabled;
 
             var camera = cameraGo.GetComponent<Camera>();
             camera.clearFlags = CameraClearFlags.SolidColor;
@@ -508,6 +573,13 @@ namespace OdontoAR.Editor
         {
             var serialized = new SerializedObject(target);
             serialized.FindProperty(field).objectReferenceValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        static void SetVector2(Object target, string field, Vector2 value)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.FindProperty(field).vector2Value = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 

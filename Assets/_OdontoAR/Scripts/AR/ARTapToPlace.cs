@@ -51,6 +51,7 @@ namespace OdontoAR.AR
         Pose targetPose;
         ARPlane targetPlane;
         ARAnchor anchor;
+        Vector3 anchorOffset;
 
         void OnEnable()
         {
@@ -141,13 +142,22 @@ namespace OdontoAR.AR
 
         void Place(Pose pose, ARPlane plane)
         {
-            // Ancorada ao plano, a arcada acompanha os ajustes que o ARKit faz na altura da mesa.
+            // A âncora no plano acompanha os ajustes que o ARKit faz na altura da mesa. A arcada copia
+            // só a posição dela (LateUpdate): como filha, herdava a orientação do plano e tombava.
             if (plane != null)
                 anchor = anchorManager.AttachAnchor(plane, pose);
 
-            ModelRoot.SetParent(anchor != null ? anchor.transform : null, true);
             ModelRoot.SetPositionAndRotation(pose.position, pose.rotation);
+            anchorOffset = anchor != null ? pose.position - anchor.transform.position : Vector3.zero;
             holder.State.SetPlaced(true);
+        }
+
+        void LateUpdate()
+        {
+            if (!holder.State.IsPlaced || anchor == null || anchor.trackingState != TrackingState.Tracking)
+                return;
+
+            ModelRoot.position = anchor.transform.position + anchorOffset;
         }
 
         /// <summary>Frente do modelo (+Z) voltada para a câmera, sem inclinar.</summary>
@@ -162,7 +172,6 @@ namespace OdontoAR.AR
 
         void ReleaseAnchor()
         {
-            ModelRoot.SetParent(null, true);
             if (anchor == null)
                 return;
 

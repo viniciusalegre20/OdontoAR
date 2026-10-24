@@ -13,6 +13,12 @@ namespace OdontoAR.Model
         [Tooltip("Meia altura do modelo em tamanho real (m). Preenchido pelo menu OdontoAR/Criar cena AR.")]
         [SerializeField] float baseHalfHeight;
 
+        [Tooltip("Sombra de contato na mesa (irmã deste objeto): acompanha a escala e o giro, não a inclinação.")]
+        [SerializeField] Transform contactShadow;
+
+        [Tooltip("Tamanho da sombra em tamanho real (m). Preenchido pelo menu OdontoAR/Criar cena AR.")]
+        [SerializeField] Vector2 contactShadowBaseSize;
+
         void OnEnable()
         {
             holder.State.Changed += Apply;
@@ -34,6 +40,14 @@ namespace OdontoAR.Model
                                       * Quaternion.AngleAxis(state.Yaw, Vector3.up);
             transform.localScale = Vector3.one * state.Scale;
             transform.localPosition = new Vector3(0f, baseHalfHeight * state.Scale, 0f);
+
+            if (contactShadow != null)
+            {
+                // O quad fica deitado na mesa (90° em X) e gira junto com a arcada em torno da vertical.
+                contactShadow.localRotation = Quaternion.AngleAxis(state.Yaw, Vector3.up)
+                                              * Quaternion.Euler(90f, 0f, 0f);
+                contactShadow.localScale = new Vector3(contactShadowBaseSize.x, contactShadowBaseSize.y, 1f) * state.Scale;
+            }
         }
     }
 }
