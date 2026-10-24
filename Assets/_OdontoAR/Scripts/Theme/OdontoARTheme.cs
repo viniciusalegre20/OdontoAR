@@ -14,6 +14,13 @@ namespace OdontoAR.Theme
         // Botões.
         public static readonly Color ButtonBackground = new(1f, 1f, 1f, 0.92f);
         public static readonly Color ButtonText = new(0.1f, 0.12f, 0.16f, 1f);
+        public static readonly Color ButtonSelectedBackground = new(0.13f, 0.47f, 0.86f, 1f);
+        public static readonly Color ButtonSelectedText = Color.white;
+
+        // Slider (abertura da boca).
+        public static readonly Color SliderTrack = new(1f, 1f, 1f, 0.35f);
+        public static readonly Color SliderFill = new(0.13f, 0.47f, 0.86f, 1f);
+        public static readonly Color SliderHandle = Color.white;
 
         // Texto sobre superfícies escuras.
         public static readonly Color TextOnOverlay = Color.white;

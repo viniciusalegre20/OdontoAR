@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OdontoAR.AR;
 using OdontoAR.Model;
 using OdontoAR.Theme;
+using OdontoAR.UI;
 using TMPro;
 using Unity.XR.CoreUtils;
 using UnityEditor;
@@ -20,7 +22,7 @@ using UnityEngine.XR.ARSubsystems;
 namespace OdontoAR.Editor
 {
     /// <summary>
-    /// T3: aplica os materiais dos modelos e gera Prefabs/Arcadas.prefab (a partir dos FBX),
+    /// T3/T4: aplica os materiais dos modelos e gera Prefabs/Arcadas.prefab (a partir dos FBX),
     /// Prefabs/PlanoAR.prefab (invisível), a mira de posicionamento e Scenes/AR.unity já ligados
     /// entre si, e coloca a cena AR como a única do build.
     /// Recria tudo a cada execução. Por terminal:
@@ -44,6 +46,9 @@ namespace OdontoAR.Editor
 
         // A sombra cobre a projeção das arcadas na mesa com uma folga, para o degradê sumir fora dela.
         const float ContactShadowMargin = 1.4f;
+
+        // Os côndilos ficam no topo de trás da mandíbula; o eixo da articulação fica um pouco para dentro.
+        const float CondyleInset = 0.01f;
 
         // Anel da mira, em metros.
         const float ReticleInnerRadius = 0.045f;
@@ -131,6 +136,13 @@ namespace OdontoAR.Editor
             var gestures = origin.gameObject.AddComponent<ModelGestures>();
             SetReference(gestures, "holder", holder);
 
+            var archControls = ui.PlacedControls.AddComponent<ArchControls>();
+            SetReference(archControls, "holder", holder);
+            SetReference(archControls, "bothButton", ui.BothButton);
+            SetReference(archControls, "upperButton", ui.UpperButton);
+            SetReference(archControls, "lowerButton", ui.LowerButton);
+            SetReference(archControls, "openingSlider", ui.OpeningSlider);
+
             UnityEventTools.AddPersistentListener(ui.ResetButton.onClick, holder.ResetView);
             UnityEventTools.AddPersistentListener(ui.RepositionButton.onClick, tapToPlace.Reposition);
 
@@ -151,7 +163,8 @@ namespace OdontoAR.Editor
         /// Arcadas (ModelStateHolder; ARTapToPlace move este objeto)
         ///   Vista (ModelView; gira e escala em torno do centro do modelo)
         ///     Modelo (deslocado para o centro das arcadas ficar na origem)
-        ///       Arcada_Superior: Maxila, Dentes_Superiores
+        ///       Articulacao (ArchController gira aqui; eixo nos côndilos)
+        ///         Arcada_Superior: Maxila, Dentes_Superiores
         ///       Arcada_Inferior: Mandibula, Dentes_Inferiores
         ///       Nervos
         /// </summary>
@@ -177,12 +190,21 @@ namespace OdontoAR.Editor
 
                 // Os FBX vêm de um corpo inteiro (~1,5 m de altura). Centraliza pelas arcadas;
                 // os nervos ficam de fora da conta porque se estendem bem além delas.
-                var renderers = superior.GetComponentsInChildren<Renderer>()
-                    .Concat(inferior.GetComponentsInChildren<Renderer>())
-                    .ToArray();
-                var bounds = renderers[0].bounds;
-                foreach (var r in renderers.Skip(1))
-                    bounds.Encapsulate(r.bounds);
+                // Até aqui tudo está na origem, então as bounds (mundo) valem no espaço do Modelo.
+                var bounds = RendererBounds(superior.GetComponentsInChildren<Renderer>()
+                    .Concat(inferior.GetComponentsInChildren<Renderer>()));
+                var mandible = RendererBounds(inferior.GetComponentsInChildren<Renderer>());
+
+                var hinge = CreateChild(modelo, "Articulacao");
+                hinge.transform.localPosition = new Vector3(
+                    mandible.center.x, mandible.max.y - CondyleInset, mandible.min.z + CondyleInset);
+                superior.transform.SetParent(hinge.transform, true);
+
+                var arch = root.AddComponent<ArchController>();
+                SetReference(arch, "holder", holder);
+                SetReference(arch, "upperArch", superior);
+                SetReference(arch, "lowerArch", inferior);
+                SetReference(arch, "jawHinge", hinge.transform);
 
                 modelo.transform.localPosition = -bounds.center;
                 SetReference(view, "holder", holder);
@@ -199,6 +221,15 @@ namespace OdontoAR.Editor
             {
                 Object.DestroyImmediate(root);
             }
+        }
+
+        static Bounds RendererBounds(IEnumerable<Renderer> renderers)
+        {
+            var list = renderers.ToList();
+            var bounds = list[0].bounds;
+            foreach (var r in list.Skip(1))
+                bounds.Encapsulate(r.bounds);
+            return bounds;
         }
 
         /// <summary>Quad deitado na mesa com um degradê radial escuro: "assenta" a arcada na superfície.</summary>
@@ -423,6 +454,10 @@ namespace OdontoAR.Editor
             public GameObject PlacedControls;
             public Button ResetButton;
             public Button RepositionButton;
+            public Button BothButton;
+            public Button UpperButton;
+            public Button LowerButton;
+            public Slider OpeningSlider;
         }
 
         static UIRefs CreateCanvas()
@@ -462,23 +497,46 @@ namespace OdontoAR.Editor
             hintTextRect.offsetMin = new Vector2(40f, 20f);
             hintTextRect.offsetMax = new Vector2(-40f, -20f);
 
-            // Botões na base, acima do indicador de início do iPhone.
-            var controls = new GameObject("ControlesVista", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            // Controles na base, acima do indicador de início do iPhone; aparecem com a arcada posicionada.
+            var controls = new GameObject("ControlesPosicionado", typeof(RectTransform), typeof(VerticalLayoutGroup),
+                typeof(ContentSizeFitter));
             controls.transform.SetParent(canvasGo.transform, false);
             var controlsRect = (RectTransform)controls.transform;
             controlsRect.anchorMin = controlsRect.anchorMax = new Vector2(0.5f, 0f);
             controlsRect.pivot = new Vector2(0.5f, 0f);
-            controlsRect.anchoredPosition = new Vector2(0f, 160f);
-            controlsRect.sizeDelta = new Vector2(1000f, 140f);
-            var layout = controls.GetComponent<HorizontalLayoutGroup>();
-            layout.spacing = 40f;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = layout.childControlHeight = true;
-            layout.childForceExpandWidth = layout.childForceExpandHeight = true;
+            controlsRect.anchoredPosition = new Vector2(0f, 120f);
+            controlsRect.sizeDelta = new Vector2(1000f, 0f);
+            var column = controls.GetComponent<VerticalLayoutGroup>();
+            column.spacing = 30f;
+            column.childControlWidth = column.childControlHeight = true;
+            column.childForceExpandWidth = true;
+            column.childForceExpandHeight = false;
+            controls.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            var reset = CreateButton(controls.transform, resources, "BotaoRestaurarVista", "Restaurar vista");
-            var reposition = CreateButton(controls.transform, resources, "BotaoReposicionar", "Reposicionar");
-            controls.SetActive(false); // aparece com a arcada posicionada
+            // Abertura da boca (RF06).
+            var openingRow = CreateRow(controls.transform, "Abertura", 110f, 30f);
+            var openingImage = openingRow.AddComponent<Image>();
+            openingImage.sprite = resources.standard;
+            openingImage.type = Image.Type.Sliced;
+            openingImage.color = OdontoARTheme.SurfaceOverlay;
+            var openingLayout = openingRow.GetComponent<HorizontalLayoutGroup>();
+            openingLayout.padding = new RectOffset(40, 50, 0, 0);
+            openingLayout.childForceExpandWidth = false;
+            var openingLabel = CreateText(openingRow.transform, "Abertura", 42f, OdontoARTheme.TextOnOverlay);
+            openingLabel.gameObject.AddComponent<LayoutElement>().preferredWidth = 220f;
+            var opening = CreateSlider(openingRow.transform);
+
+            // Seletor de arcada (RF03).
+            var selector = CreateRow(controls.transform, "SeletorArcada", 120f, 20f);
+            var both = CreateButton(selector.transform, resources, "BotaoAmbas", "Ambas");
+            var upper = CreateButton(selector.transform, resources, "BotaoSuperior", "Superior");
+            var lower = CreateButton(selector.transform, resources, "BotaoInferior", "Inferior");
+
+            var view = CreateRow(controls.transform, "ControlesVista", 140f, 40f);
+            var reset = CreateButton(view.transform, resources, "BotaoRestaurarVista", "Restaurar vista");
+            var reposition = CreateButton(view.transform, resources, "BotaoReposicionar", "Reposicionar");
+
+            controls.SetActive(false);
 
             return new UIRefs
             {
@@ -486,7 +544,52 @@ namespace OdontoAR.Editor
                 PlacedControls = controls,
                 ResetButton = reset,
                 RepositionButton = reposition,
+                BothButton = both,
+                UpperButton = upper,
+                LowerButton = lower,
+                OpeningSlider = opening,
             };
+        }
+
+        /// <summary>Linha horizontal de altura fixa dentro da coluna de controles.</summary>
+        static GameObject CreateRow(Transform parent, string name, float height, float spacing)
+        {
+            var row = new GameObject(name, typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+            row.transform.SetParent(parent, false);
+            row.GetComponent<LayoutElement>().preferredHeight = height;
+            var layout = row.GetComponent<HorizontalLayoutGroup>();
+            layout.spacing = spacing;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = layout.childControlHeight = true;
+            layout.childForceExpandWidth = layout.childForceExpandHeight = true;
+            return row;
+        }
+
+        static Slider CreateSlider(Transform parent)
+        {
+            var go = DefaultControls.CreateSlider(new DefaultControls.Resources
+            {
+                standard = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd"),
+                background = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Background.psd"),
+                knob = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd"),
+            });
+            go.name = "SliderAbertura";
+            go.transform.SetParent(parent, false);
+            var element = go.AddComponent<LayoutElement>();
+            element.flexibleWidth = 1f;
+            element.preferredHeight = 70f;
+
+            var slider = go.GetComponent<Slider>();
+            slider.minValue = 0f;
+            slider.maxValue = 1f;
+            slider.value = 0f;
+
+            go.transform.Find("Background").GetComponent<Image>().color = OdontoARTheme.SliderTrack;
+            go.transform.Find("Fill Area/Fill").GetComponent<Image>().color = OdontoARTheme.SliderFill;
+            var handle = slider.handleRect;
+            handle.GetComponent<Image>().color = OdontoARTheme.SliderHandle;
+            handle.sizeDelta = new Vector2(70f, 0f); // alvo de toque do tamanho do dedo
+            return slider;
         }
 
         static Button CreateButton(Transform parent, TMP_DefaultControls.Resources resources, string name, string label)

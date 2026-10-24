@@ -3,9 +3,17 @@ using UnityEngine;
 
 namespace OdontoAR.Model
 {
+    /// <summary>Quais arcadas aparecem (RF03).</summary>
+    public enum ArchSelection
+    {
+        Both,
+        Upper,
+        Lower,
+    }
+
     /// <summary>
-    /// Estado do modelo, sem MonoBehaviour (testável em EditMode).
-    /// T3: posicionamento, rotação e escala. T4 acrescenta arcada e abertura.
+    /// Estado do modelo, sem MonoBehaviour (testável em EditMode):
+    /// posicionamento, rotação, escala, arcada visível e abertura da boca.
     /// </summary>
     public sealed class ModelState
     {
@@ -27,6 +35,11 @@ namespace OdontoAR.Model
 
         /// <summary>Inclinação para frente/trás, em graus [-MaxPitch, MaxPitch].</summary>
         public float Pitch { get; private set; }
+
+        public ArchSelection Arch { get; private set; } = ArchSelection.Both;
+
+        /// <summary>Abertura da boca (RF06): 0 = fechada, 1 = abertura máxima.</summary>
+        public float Opening { get; private set; }
 
         public void SetPlaced(bool placed)
         {
@@ -66,7 +79,32 @@ namespace OdontoAR.Model
             Changed?.Invoke();
         }
 
-        /// <summary>"Restaurar vista" (RF07): volta rotação e escala ao padrão, sem mover o modelo.</summary>
+        public void SetArch(ArchSelection arch)
+        {
+            if (!Enum.IsDefined(typeof(ArchSelection), arch) || arch == Arch)
+                return;
+
+            Arch = arch;
+            Changed?.Invoke();
+        }
+
+        public void SetOpening(float opening)
+        {
+            if (!IsFinite(opening))
+                return;
+
+            opening = Mathf.Clamp01(opening);
+            if (Mathf.Approximately(opening, Opening))
+                return;
+
+            Opening = opening;
+            Changed?.Invoke();
+        }
+
+        /// <summary>
+        /// "Restaurar vista" (RF07): volta rotação e escala ao padrão, sem mover o modelo.
+        /// Arcada e abertura ficam como o aluno deixou.
+        /// </summary>
         public void ResetView()
         {
             Yaw = 0f;

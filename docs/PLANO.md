@@ -34,7 +34,7 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 - 🧑 Abrir `Builds/iOS/Unity-iPhone.xcodeproj` no Xcode, assinar com o Apple ID e rodar no iPhone.
 - **Aceite (RF01, RF02, RF04, RF05, RF07):** toque posiciona a arcada na mesa; 1 dedo gira; pinça amplia; "Restaurar vista" funciona.
 
-### T4 — Estado do modelo e arcadas
+### T4 — Estado do modelo e arcadas ✅ (24/10)
 - 🤖 Implementar a lógica de arcada (superior/inferior/ambas, abertura) em `ModelState` (classe pura) + `ArchController` (MonoBehaviour).
 - 🤖 Testes EditMode do `ModelState`.
 - **Aceite (RF03, RF06):** seletor e slider de abertura funcionam no iPhone; testes passam.

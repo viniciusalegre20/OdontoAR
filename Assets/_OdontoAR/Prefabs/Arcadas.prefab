@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &444758692383922091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6519284685038565697}
+  m_Layer: 0
+  m_Name: Articulacao
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6519284685038565697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444758692383922091}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5686473, z: 0.0117979925}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4873829923528280549}
+  m_Father: {fileID: 6124551569190084345}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &982946435194559163
 GameObject:
   m_ObjectHideFlags: 0
@@ -29,9 +61,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4873829923528280549}
   - {fileID: 8624404607217629617}
   - {fileID: 4566967399310373537}
+  - {fileID: 6519284685038565697}
   m_Father: {fileID: 554530820279084835}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1454216116298417240
@@ -230,14 +262,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6822628628049090106}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.5686473, z: -0.0117979925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7698603232586747732}
   - {fileID: 8376114629497963891}
-  m_Father: {fileID: 6124551569190084345}
+  m_Father: {fileID: 6519284685038565697}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8005552392273924844
 GameObject:
@@ -249,6 +281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7400402041623645825}
   - component: {fileID: 201386220884121204}
+  - component: {fileID: 7112530523890331879}
   m_Layer: 0
   m_Name: Arcadas
   m_TagString: Untagged
@@ -285,6 +318,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cf1a1078cbbd4177b527172ceafa455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.ModelStateHolder
+--- !u!114 &7112530523890331879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8005552392273924844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81c615b72cb8d4b839672d24b47bdc3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.ArchController
+  holder: {fileID: 201386220884121204}
+  upperArch: {fileID: 6822628628049090106}
+  lowerArch: {fileID: 2735466048322659340}
+  jawHinge: {fileID: 6519284685038565697}
+  maxOpeningDegrees: 25
 --- !u!1001 &4101541048811148618
 PrefabInstance:
   m_ObjectHideFlags: 0
