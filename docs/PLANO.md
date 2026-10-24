@@ -5,14 +5,14 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 
 ## Semana 1 (26/10–01/11): RA no iPhone
 
-### T0 — Criação do projeto (do zero)
+### T0 — Criação do projeto (do zero) ✅ (23/10)
 > Não há protótipo WebGL: o projeto começa vazio, só com um modelo 3D básico da arcada.
 - 🧑 Entrar no Unity Hub (licença Personal ativa) e criar o projeto com o template **Universal 3D** (Unity 6000.6.4f1).
 - 🤖 Mover o projeto para a raiz do repositório, `git init`, `.gitignore`, estrutura `Assets/_OdontoAR/` e `docs/AUDITORIA.md` (estado inicial: versão, pacotes, modelo 3D disponível e sua hierarquia).
 - 🧑 Copiar o modelo 3D básico para `Assets/_OdontoAR/Models/`.
 - **Aceite:** projeto abre no Unity sem erros; `docs/AUDITORIA.md` revisado pelo humano.
 
-### T1 — Pacotes e configuração iOS
+### T1 — Pacotes e configuração iOS ✅ (24/10)
 - 🤖 Adicionar ao `Packages/manifest.json`: AR Foundation, Apple ARKit XR Plugin, Input System, TextMeshPro (versões compatíveis com o Unity instalado).
 - 🤖 Script `Editor/ProjectSetup.cs` (menu `OdontoAR/Configurar projeto iOS`): plataforma iOS, ARKit ligado no XR Plug-in Management, Camera Usage Description em português, "Requires ARKit", iOS mínimo compatível, Active Input Handling, nome do produto "OdontoAR", empresa "Aura Works" e bundle id.
 - 🤖 Remover pacotes do template que não usamos (ver `docs/AUDITORIA.md`).
