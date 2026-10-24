@@ -38,35 +38,28 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 ## Semana 2 (02–08/11): camadas e seleção
 
 ### T5 — Convenção do modelo + validador
-- 🧑 No Blender, separar o modelo prévio nesta hierarquia (exportar FBX, +Z = face frontal, escala em metros):
-  ```
-  Arcadas
-    Arcada_Superior
-      Osso_Superior
-      Dente_11 → 11_Coroa, 11_Raiz, 11_Polpa
-      ...
-    Arcada_Inferior
-      Osso_Inferior
-      Dente_36 → 36_Coroa, 36_Raiz_Mesial, 36_Raiz_Distal, 36_Polpa
-  ```
-- 🤖 `Editor/ModelValidator.cs` (menu `OdontoAR/Validar modelo`): lista objetos fora da convenção, dentes sem camada, malhas sem collider.
-- **Aceite:** validador sem erros no modelo prévio (dentes faltando são aceitáveis na POC, mas listados).
+> Modelo recebido em 24/10 (ver `docs/AUDITORIA.md`): 5 FBX do atlas Z-Anatomy, nomes em inglês
+> (`Upper first molar tooth.l`), coroa e raiz como materiais (`Teeth`, `Teeth-roots`) dentro da malha
+> de cada dente, **sem polpa** (decisão: POC segue sem polpa) e sem terceiros molares.
+- 🤖 Mapear os nomes atuais para FDI (`Upper`/`Lower` + tipo + `.l`/`.r` → código), sem renomear no Blender.
+- 🤖 `Editor/ModelValidator.cs` (menu `OdontoAR/Validar modelo`): lista objetos que não mapeiam para FDI, dentes sem os materiais de coroa/raiz, malhas sem collider.
+- **Aceite:** validador sem erros nos FBX (os 4 terceiros molares ausentes são listados, não são erro).
 
 ### T6 — Camadas (RF08)
-- 🤖 `LayerController`: identifica a camada pelo sufixo do nome, aplica materiais URP com as cores de `OdontoARTheme` (osso sempre translúcido), liga/desliga camadas a partir do `ModelState`.
-- 🤖 Visualização integrada: com polpa ou osso visíveis, coroa a 55% e raiz a 70%.
+- 🤖 `LayerController`: 4 camadas — **coroa** e **raiz** (por material/submesh dos dentes), **osso** (maxila + mandíbula, sempre translúcido) e **nervos** (`nervoface2.fbx`). Cores de `OdontoARTheme`, liga/desliga a partir do `ModelState`.
+- 🤖 Visualização integrada: com osso ou nervos visíveis, coroa a 55% e raiz a 70%.
 - **Aceite:** 4 toggles funcionam no iPhone; FPS ≥ 30 com tudo ligado.
 
 ### T7 — Seleção e cartão FDI (RF09)
-- 🤖 `StructureCatalog` (ScriptableObject em `Data/`) com nome em português de todos os 32 dentes e das camadas, chave = código FDI.
+- 🤖 `StructureCatalog` (ScriptableObject em `Data/`) com nome em português dos 28 dentes do modelo (e dos 4 terceiros molares, para quando existirem), das camadas, da maxila, da mandíbula e dos nervos; chave = código FDI.
 - 🤖 `SelectionController`: toque curto (sem arrastar) faz raycast nos colliders, contorno ciano na estrutura, resto a 20%.
-- 🤖 Cartão flutuante ancorado ("Primeiro molar inferior esquerdo — 36", "Camada: Raiz mesial").
+- 🤖 Cartão flutuante ancorado ("Primeiro molar inferior esquerdo — 36", "Camada: Raiz").
 - **Aceite:** tocar em 5 estruturas diferentes mostra nomes corretos; toque não conflita com girar.
 
 ## Semana 3 (09–15/11): interface, registro e oclusão
 
 ### T8 — Interface conforme o design system
-- 🤖 Telas 1–3 (abertura, código do participante, permissão de câmera), 4–5 (coaching de superfície usando o estado do ARPlaneManager), 6–7 (barra superior, seletor, painel de camadas recolhível com `CamadaChip`), 9 (ajuda).
+- 🤖 Telas 1–3 (abertura, código do participante, permissão de câmera), 4–5 (coaching de superfície usando o estado do ARPlaneManager), 6–7 (barra superior, seletor, painel de camadas recolhível com `CamadaChip`), 9 (ajuda, com a seção **Créditos** do `docs/CREDITOS.md`).
 - 🤖 Navegação simples por um `ScreenRouter`; centro da tela livre nas telas de RA.
 - 🧑 Exportar os ícones como PNG para `Assets/_OdontoAR/UI/Icons`.
 - **Aceite:** fluxo completo da abertura até a RA sem dead ends; textos em pt-BR.
