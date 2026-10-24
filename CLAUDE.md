@@ -41,6 +41,7 @@ Assemblies: `OdontoAR` (Scripts/), `OdontoAR.Editor` (Editor/), `OdontoAR.Tests.
 
 ## Comandos
 Modo batch exige o Unity Hub logado com licença ativa (sem isso, sai com código 198).
+O build iOS exige o **Xcode** instalado e selecionado (`xcode-select -p` → `/Applications/Xcode.app/...`); só com as Command Line Tools o build falha em `actool`.
 - Build iOS por terminal (após T2):
   `"/Applications/Unity/Hub/Editor/6000.6.4f1/Unity.app/Contents/MacOS/Unity" -batchmode -quit -projectPath . -executeMethod OdontoAR.Editor.BuildScript.BuildIOS -logFile Builds/build.log`
 - Testes EditMode:

@@ -19,7 +19,7 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 - 🧑 Rodar o menu e conferir.
 - **Aceite:** projeto abre sem erros com o alvo iOS.
 
-### T2 — Build por linha de comando
+### T2 — Build por linha de comando ✅ (24/10)
 - 🤖 `Editor/BuildScript.cs` com `BuildIOS()` gerando o projeto Xcode em `Builds/iOS`, saindo com código ≠ 0 em erro.
 - ✅ `.gitignore` do Unity (Library, Temp, Builds, Logs, UserSettings) — feito na T0.
 - **Aceite:** comando do `CLAUDE.md` gera o Xcode sem erro.
