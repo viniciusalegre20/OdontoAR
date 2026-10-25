@@ -24,7 +24,7 @@ referência. Não substitui a execução do checklist.
 | RF01 | Visualizar a arcada em 3D sobreposta ao ambiente real por RA | Abrir o app, passar pelo código e pela câmera; apontar para uma mesa e tocar quando o retículo aparecer | A arcada aparece sobre a mesa, em tamanho real, com a imagem da câmera ao fundo | OK | | |
 | RF02 | Posicionar o modelo sobre uma superfície detectada pela câmera | Apontar para a mesa até "Superfície detectada"; tocar; depois "Reposicionar" e tocar em outro ponto | A arcada apoia na mesa onde estava o retículo, de frente para o aluno; "Reposicionar" volta ao retículo | OK | | |
 | RF03 | Selecionar arcada superior, inferior ou ambas | Tocar em Superior, Inferior e Ambas no seletor | Só a arcada escolhida aparece; "Ambas" mostra as duas | OK | | |
-| RF04 | Rotacionar por gesto de arrastar | Arrastar 1 dedo na horizontal e na vertical sobre a tela | A arcada gira em torno do eixo vertical e inclina para frente/trás (até 80°) | OK | | |
+| RF04 | Rotacionar por gesto de arrastar | Arrastar 1 dedo na horizontal e na vertical; girar 2 dedos | Horizontal: gira sobre a mesa. Vertical: inclina sem limite (vista por cima, por baixo, oclusal). 2 dedos girando: inclina para os lados. A arcada continua apoiada na mesa | | | |
 | RF05 | Alterar a escala (zoom) | Pinça para ampliar e reduzir | A arcada cresce até 4× e diminui até 0,5× o tamanho real, continuando apoiada na mesa | OK | | |
 | RF06 | Ajustar a abertura entre as arcadas | Com "Ambas", arrastar o slider "Abertura entre arcadas" | A arcada superior abre em torno da ATM de 0° a 30°; o valor em graus acompanha; com uma só arcada o slider fica desativado | OK | | |
 | RF07 | Restaurar a vista inicial | Girar e ampliar; tocar em "Restaurar vista" | Giro, inclinação e zoom voltam ao padrão; arcada, abertura e camadas continuam como estavam | OK | | |
@@ -48,6 +48,8 @@ polpa; a 4ª camada é **nervos** (decisão registrada em `docs/AUDITORIA.md`). 
 | I7 | Seleção some com a estrutura | Selecionar um dente superior; tocar em "Inferior" | O cartão fecha | | | |
 | I8 | Painel recolhe com o cartão | Selecionar uma estrutura | O painel de camadas recolhe; ao abrir o painel, o cartão fecha |   | | |
 | I9 | Ajuda | Tocar em "?"; rolar até Créditos; "Entendi" | Folha abre com os 4 gestos e os créditos do Z-Anatomy; fecha | OK | | |
+| I11 | Reposicionar começa reto | Girar/inclinar a arcada; "Reposicionar" e tocar na mesa | A arcada nasce de frente, reta e em tamanho real; abertura e camadas continuam | | | |
+| I12 | Rastreamento reiniciado | Cobrir a câmera ou apontar para uma superfície lisa até aparecer "Rastreamento instável" | Se o ARKit reiniciar, o app volta para "O rastreamento reiniciou. Procure a mesa de novo…" em vez de deixar a arcada fora do lugar | | | |
 | I10 | Segunda abertura | Fechar o app pelo seletor de apps e abrir de novo | Vai direto para a RA (código e câmera já salvos) | OK | | |
 
 ## 3. Posicionamento e estabilidade (RF02, RNF03)

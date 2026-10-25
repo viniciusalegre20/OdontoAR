@@ -1,5 +1,6 @@
 using OdontoAR.AR;
 using OdontoAR.Model;
+using TMPro;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
@@ -19,6 +20,13 @@ namespace OdontoAR.UI
         [SerializeField] GameObject unstable;
         [SerializeField] GameObject gestureHint;
         [SerializeField] RectTransform spinner;
+        [SerializeField] TextMeshProUGUI searchingLabel;
+
+        [Tooltip("Por quanto tempo a pílula de busca avisa que o rastreamento reiniciou (s).")]
+        [SerializeField] float resetNoticeSeconds = 6f;
+
+        const string SearchingText = "Procurando superfície…";
+        const string ResetText = "O rastreamento reiniciou. Procure a mesa de novo…";
 
         [Tooltip("Voltas por segundo do indicador de busca.")]
         [SerializeField] float spinnerSpeed = 1f;
@@ -39,7 +47,7 @@ namespace OdontoAR.UI
         void OnStateChanged()
         {
             var state = holder.State;
-            if (state.IsPlaced && (state.Yaw != 0f || state.Pitch != 0f || state.Scale != ModelState.DefaultScale))
+            if (state.IsPlaced && state.IsViewChanged)
                 gestured = true;
         }
 
@@ -55,7 +63,11 @@ namespace OdontoAR.UI
             gestureHint.SetActive(placed && !gestured && !state.HasSelection);
 
             if (searching.activeSelf)
+            {
                 spinner.Rotate(0f, 0f, -360f * spinnerSpeed * Time.deltaTime);
+                var recentReset = Time.unscaledTime - tapToPlace.LastTrackingResetTime < resetNoticeSeconds;
+                searchingLabel.text = recentReset ? ResetText : SearchingText;
+            }
         }
     }
 }

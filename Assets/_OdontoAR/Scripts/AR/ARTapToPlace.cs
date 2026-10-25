@@ -35,6 +35,9 @@ namespace OdontoAR.AR
         [Tooltip("A superfície precisa estar pelo menos isto abaixo da câmera (m), para ignorar tetos.")]
         [SerializeField] float minDistanceBelowCamera = 0.1f;
 
+        [Tooltip("Tempo sem a âncora (s) até concluir que o ARKit reiniciou o mundo e pedir para posicionar de novo.")]
+        [SerializeField] float anchorLostSeconds = 1f;
+
         const TrackableType RaycastTypes = TrackableType.PlaneWithinPolygon | TrackableType.PlaneEstimated;
 
         static readonly List<ARRaycastHit> s_Hits = new();
@@ -48,7 +51,15 @@ namespace OdontoAR.AR
         Pose targetPose;
         ARPlane targetPlane;
         ARAnchor anchor;
+        bool anchored;
+        float anchorLostFor;
         Vector3 anchorOffset;
+
+        /// <summary>Quantas vezes o ARKit reiniciou o mundo com a arcada na mesa (para o status e o log).</summary>
+        public int TrackingResets { get; private set; }
+
+        /// <summary>Instante (Time.unscaledTime) do último reinício, para a interface avisar.</summary>
+        public float LastTrackingResetTime { get; private set; } = float.NegativeInfinity;
 
         void OnEnable()
         {
@@ -147,6 +158,8 @@ namespace OdontoAR.AR
             // só a posição dela (LateUpdate): como filha, herdava a orientação do plano e tombava.
             if (plane != null)
                 anchor = anchorManager.AttachAnchor(plane, pose);
+            anchored = anchor != null;
+            anchorLostFor = 0f;
 
             ModelRoot.SetPositionAndRotation(pose.position, pose.rotation);
             anchorOffset = anchor != null ? pose.position - anchor.transform.position : Vector3.zero;
@@ -155,10 +168,32 @@ namespace OdontoAR.AR
 
         void LateUpdate()
         {
-            if (!holder.State.IsPlaced || anchor == null || anchor.trackingState != TrackingState.Tracking)
+            if (!holder.State.IsPlaced || !anchored)
                 return;
 
-            ModelRoot.position = anchor.transform.position + anchorOffset;
+            // Com pouca textura (InsufficientFeatures) o ARKit pode reiniciar o mundo: cria coordenadas novas a
+            // partir de onde o iPhone está e descarta as âncoras. A arcada ficaria num endereço que não é mais a
+            // mesa (fora do lugar, "andando com a câmera"); então volta para "Procurando superfície…".
+            if (anchor == null || anchor.trackingState == TrackingState.None)
+            {
+                anchorLostFor += Time.unscaledDeltaTime;
+                if (anchorLostFor >= anchorLostSeconds)
+                    OnTrackingReset();
+                return;
+            }
+
+            anchorLostFor = 0f;
+            if (anchor.trackingState == TrackingState.Tracking)
+                ModelRoot.position = anchor.transform.position + anchorOffset;
+        }
+
+        void OnTrackingReset()
+        {
+            TrackingResets++;
+            LastTrackingResetTime = Time.unscaledTime;
+            Debug.Log($"[OdontoAR] Âncora perdida: o ARKit reiniciou o rastreamento ({TrackingResets}ª vez). " +
+                      "Pedindo para posicionar de novo.");
+            holder.State.SetPlaced(false);
         }
 
         /// <summary>Frente do modelo (+Z) voltada para a câmera, sem inclinar.</summary>
@@ -173,8 +208,9 @@ namespace OdontoAR.AR
 
         void ReleaseAnchor()
         {
+            anchored = false;
             if (anchor == null)
-                return;
+                return; // o ARKit já a descartou
 
             Destroy(anchor.gameObject);
             anchor = null;

@@ -56,8 +56,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 982946435194559163}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -1.5507576, z: -0.04783528}
+  m_LocalRotation: {x: -0.124546066, y: 0, z: 1.7005489e-10, w: 0.99221385}
+  m_LocalPosition: {x: -0, y: -1.5144706, z: 0.3369998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -112,9 +112,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: OdontoAR::OdontoAR.Model.ModelView
   holder: {fileID: 201386220884121204}
-  baseHalfHeight: 0.05446124
+  baseExtents: {x: 0.051664036, y: 0.06414986, z: 0.05142483}
   contactShadow: {fileID: 3138721739686063708}
-  contactShadowBaseSize: {x: 0.1446593, y: 0.1289044}
+  contactShadowBaseSize: {x: 0.1446593, y: 0.14398952}
 --- !u!1 &2735466048322659340
 GameObject:
   m_ObjectHideFlags: 0

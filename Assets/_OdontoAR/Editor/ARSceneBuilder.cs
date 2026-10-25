@@ -120,6 +120,7 @@ namespace OdontoAR.Editor
             session.enabled = false;
 
             var (origin, arCamera) = CreateXROrigin();
+            new GameObject("LogRastreamento").AddComponent<TrackingLog>().SetCamera(arCamera);
             var planeManager = origin.gameObject.AddComponent<ARPlaneManager>();
             planeManager.planePrefab = planePrefab;
             planeManager.requestedDetectionMode = PlaneDetectionMode.Horizontal;
@@ -144,6 +145,7 @@ namespace OdontoAR.Editor
 
             var gestures = origin.gameObject.AddComponent<ModelGestures>();
             SetReference(gestures, "holder", holder);
+            SetReference(gestures, "arCamera", arCamera);
 
             var selection = origin.gameObject.AddComponent<SelectionController>();
             SetReference(selection, "holder", holder);
@@ -247,9 +249,17 @@ namespace OdontoAR.Editor
                     .Concat(AddSelectable(boneRenderers, tooth: false))
                     .Concat(AddSelectable(nerveRenderers, tooth: false)));
 
+                // O atlas vem na posição anatômica (plano de Frankfurt na horizontal), com o plano oclusal
+                // inclinado: a arcada parecia tombada na mesa. Nivela pelo plano oclusal, como um modelo de
+                // gesso montado, e recalcula a caixa já girada para centralizar e apoiar na mesa.
+                modelo.transform.localRotation = OcclusalLeveling(
+                    RenderersOf(superior, "Dentes_Superiores").ToList(), RenderersOf(inferior, "Dentes_Inferiores").ToList());
+                bounds = RendererBounds(superior.GetComponentsInChildren<Renderer>()
+                    .Concat(inferior.GetComponentsInChildren<Renderer>()));
+
                 modelo.transform.localPosition = -bounds.center;
                 SetReference(view, "holder", holder);
-                SetFloat(view, "baseHalfHeight", bounds.extents.y);
+                SetVector3(view, "baseExtents", bounds.extents);
 
                 var shadow = CreateContactShadow(root);
                 SetReference(view, "contactShadow", shadow);
@@ -342,6 +352,42 @@ namespace OdontoAR.Editor
 
             catalog.SetEntries(entries.OrderBy(e => e.key, System.StringComparer.Ordinal));
             EditorUtility.SetDirty(catalog);
+        }
+
+        /// <summary>
+        /// Rotação que deixa o plano oclusal na horizontal: plano y = a·x + b·z + c ajustado por mínimos
+        /// quadrados às pontas dos dentes (bordas incisais e cúspides: o topo dos inferiores e a base dos
+        /// superiores). O centro de cada dente não serve: as raízes longas e inclinadas dos incisivos o
+        /// deslocam. Só inclina (pitch/roll); a frente continua em +Z.
+        /// </summary>
+        static Quaternion OcclusalLeveling(IReadOnlyCollection<Renderer> upperTeeth, IReadOnlyCollection<Renderer> lowerTeeth)
+        {
+            Vector3 Tip(Bounds b, bool upper) => new(b.center.x, upper ? b.min.y : b.max.y, b.center.z);
+            var points = upperTeeth.Select(t => Tip(t.bounds, upper: true))
+                .Concat(lowerTeeth.Select(t => Tip(t.bounds, upper: false)))
+                .ToList();
+            var mean = points.Aggregate(Vector3.zero, (sum, p) => sum + p) / points.Count;
+
+            // Sistema normal de y' = a·x' + b·z' (coordenadas centradas na média).
+            double sxx = 0, sxz = 0, szz = 0, sxy = 0, szy = 0;
+            foreach (var p in points)
+            {
+                var d = p - mean;
+                sxx += d.x * d.x; sxz += d.x * d.z; szz += d.z * d.z;
+                sxy += d.x * d.y; szy += d.z * d.y;
+            }
+            var det = sxx * szz - sxz * sxz;
+            if (System.Math.Abs(det) < 1e-12)
+                return Quaternion.identity;
+            var a = (sxy * szz - szy * sxz) / det;
+            var b = (szy * sxx - sxy * sxz) / det;
+
+            var normal = new Vector3((float)-a, 1f, (float)-b).normalized;
+            var leveling = Quaternion.FromToRotation(normal, Vector3.up);
+            var euler = leveling.eulerAngles;
+            Debug.Log($"[OdontoAR] Plano oclusal nivelado: inclinação {Vector3.Angle(normal, Vector3.up):F1}° " +
+                      $"(x {Mathf.DeltaAngle(0f, euler.x):F1}°, z {Mathf.DeltaAngle(0f, euler.z):F1}°).");
+            return leveling;
         }
 
         static IEnumerable<Renderer> RenderersOf(GameObject parent, string child) =>
@@ -665,17 +711,17 @@ namespace OdontoAR.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        static void SetVector3(Object target, string field, Vector3 value)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.FindProperty(field).vector3Value = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         static void SetVector2(Object target, string field, Vector2 value)
         {
             var serialized = new SerializedObject(target);
             serialized.FindProperty(field).vector2Value = value;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        static void SetFloat(Object target, string field, float value)
-        {
-            var serialized = new SerializedObject(target);
-            serialized.FindProperty(field).floatValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
     }

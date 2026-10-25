@@ -516,6 +516,7 @@ namespace OdontoAR.Editor
             // Tela 4: procurando superfície.
             var searching = Stretch(Rect(status, "Procurando"));
             StatusPill(searching, "Procurando superfície…", null, out var pillRow);
+            var searchingLabel = pillRow.GetComponentInChildren<TextMeshProUGUI>();
             var spinner = Rect(pillRow, "Indicador");
             Size(spinner, 18f, 18f);
             spinner.SetAsFirstSibling();
@@ -540,6 +541,7 @@ namespace OdontoAR.Editor
             Set(logic, "found", found.gameObject);
             Set(logic, "unstable", unstable.gameObject);
             Set(logic, "spinner", spinner);
+            Set(logic, "searchingLabel", searchingLabel);
             return logic; // a dica de gestos fica presa ao painel e é ligada depois
         }
 
@@ -937,7 +939,7 @@ namespace OdontoAR.Editor
             Text(content, "Gestos para explorar a arcada em RA.", kit.Regular, OdontoARTheme.Body, OdontoARTheme.InkMuted);
 
             GestureRow(content, "reset", "Arrastar", "Gira a arcada em qualquer direção.");
-            GestureRow(content, "scope", "Pinça", "Amplia ou reduz o modelo.");
+            GestureRow(content, "scope", "Pinça", "Amplia ou reduz. Girando os dois dedos, inclina a arcada para os lados.");
             GestureRow(content, "tap", "Tocar em uma estrutura", "Mostra o nome, a camada e a notação FDI.");
             GestureRow(content, "layers", "Botão de camadas", "Exibe ou oculta coroa, raiz, osso e nervos.");
 

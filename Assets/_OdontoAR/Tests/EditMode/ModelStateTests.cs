@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OdontoAR.Model;
+using UnityEngine;
 
 namespace OdontoAR.Tests
 {
@@ -21,8 +22,8 @@ namespace OdontoAR.Tests
         {
             Assert.IsFalse(state.IsPlaced);
             Assert.AreEqual(ModelState.DefaultScale, state.Scale);
-            Assert.AreEqual(0f, state.Yaw);
-            Assert.AreEqual(0f, state.Pitch);
+            Assert.AreEqual(Quaternion.identity, state.Rotation);
+            Assert.IsFalse(state.IsViewChanged);
         }
 
         [Test]
@@ -35,23 +36,32 @@ namespace OdontoAR.Tests
         }
 
         [Test]
-        public void GiroDaVoltaCompletaEFicaEntre0e360()
+        public void GirosSeAcumulam()
         {
-            state.Rotate(-30f, 0f);
-            Assert.AreEqual(330f, state.Yaw, 1e-4f);
-
-            state.Rotate(400f, 0f);
-            Assert.AreEqual(10f, state.Yaw, 1e-4f);
+            state.RotateBy(Quaternion.AngleAxis(30f, Vector3.up));
+            state.RotateBy(Quaternion.AngleAxis(30f, Vector3.up));
+            Assert.AreEqual(60f, Quaternion.Angle(Quaternion.identity, state.Rotation), 1e-3f);
+            Assert.AreEqual(2, changes);
+            Assert.IsTrue(state.IsViewChanged);
         }
 
         [Test]
-        public void InclinacaoRespeitaOLimite()
+        public void InclinacaoNaoTemLimite()
         {
-            state.Rotate(0f, 500f);
-            Assert.AreEqual(ModelState.MaxPitch, state.Pitch);
+            // Duas inclinações de 170° = 340°: a arcada dá quase uma volta (antes parava em 80°).
+            state.RotateBy(Quaternion.AngleAxis(170f, Vector3.right));
+            state.RotateBy(Quaternion.AngleAxis(170f, Vector3.right));
+            var expected = Quaternion.AngleAxis(-20f, Vector3.right);
+            Assert.AreEqual(0f, Quaternion.Angle(expected, state.Rotation), 1e-2f);
+        }
 
-            state.Rotate(0f, -1000f);
-            Assert.AreEqual(-ModelState.MaxPitch, state.Pitch);
+        [Test]
+        public void MuitosGirosPequenosContinuamNormalizados()
+        {
+            for (var i = 0; i < 5000; i++)
+                state.RotateBy(Quaternion.Euler(0.3f, 0.7f, 0.2f));
+            var q = state.Rotation;
+            Assert.AreEqual(1f, Mathf.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w), 1e-4f);
         }
 
         [Test]
@@ -81,9 +91,10 @@ namespace OdontoAR.Tests
         [Test]
         public void GiroInvalidoEIgnorado()
         {
-            state.Rotate(float.NaN, 10f);
-            Assert.AreEqual(0f, state.Yaw);
-            Assert.AreEqual(0f, state.Pitch);
+            state.RotateBy(new Quaternion(float.NaN, 0f, 0f, 1f));
+            state.RotateBy(new Quaternion(0f, 0f, 0f, 0f));
+            state.RotateBy(Quaternion.identity);
+            Assert.AreEqual(Quaternion.identity, state.Rotation);
             Assert.AreEqual(0, changes);
         }
 
@@ -91,14 +102,13 @@ namespace OdontoAR.Tests
         public void RestaurarVistaZeraGiroEscalaMasMantemPosicionado()
         {
             state.SetPlaced(true);
-            state.Rotate(45f, 20f);
+            state.RotateBy(Quaternion.Euler(20f, 45f, 10f));
             state.ScaleBy(2f);
 
             state.ResetView();
 
             Assert.IsTrue(state.IsPlaced);
-            Assert.AreEqual(0f, state.Yaw);
-            Assert.AreEqual(0f, state.Pitch);
+            Assert.AreEqual(Quaternion.identity, state.Rotation);
             Assert.AreEqual(ModelState.DefaultScale, state.Scale);
         }
 
@@ -198,6 +208,24 @@ namespace OdontoAR.Tests
             state.SetLayerVisible(Layer.Root, false);
             state.ResetView();
             Assert.IsFalse(state.IsLayerVisible(Layer.Root));
+        }
+
+        [Test]
+        public void PosicionarDeNovoComecaNaVistaPadrao()
+        {
+            state.SetPlaced(true);
+            state.RotateBy(Quaternion.Euler(60f, 45f, 0f));
+            state.ScaleBy(2f);
+            state.SetOpening(0.5f);
+            state.SetLayerVisible(Layer.Bone, false);
+
+            state.SetPlaced(false); // "Reposicionar"
+            state.SetPlaced(true);
+
+            Assert.AreEqual(Quaternion.identity, state.Rotation);
+            Assert.AreEqual(ModelState.DefaultScale, state.Scale);
+            Assert.AreEqual(0.5f, state.Opening, 1e-5f);   // abertura e camadas continuam
+            Assert.IsFalse(state.IsLayerVisible(Layer.Bone));
         }
 
         [Test]

@@ -29,7 +29,6 @@ namespace OdontoAR.Model
         public const float DefaultScale = 1f;
         public const float MinScale = 0.5f;
         public const float MaxScale = 4f;
-        public const float MaxPitch = 80f;
 
         /// <summary>Ângulo da articulação com a abertura máxima (design system: 0–30°).</summary>
         public const float MaxOpeningDegrees = 30f;
@@ -42,11 +41,11 @@ namespace OdontoAR.Model
         /// <summary>Multiplicador sobre o tamanho real (1 = tamanho anatômico).</summary>
         public float Scale { get; private set; } = DefaultScale;
 
-        /// <summary>Giro em torno do eixo vertical, em graus [0, 360).</summary>
-        public float Yaw { get; private set; }
-
-        /// <summary>Inclinação para frente/trás, em graus [-MaxPitch, MaxPitch].</summary>
-        public float Pitch { get; private set; }
+        /// <summary>
+        /// Orientação da arcada no espaço do objeto posicionado (que fica de frente para o aluno, +Z para ele).
+        /// Livre em qualquer direção (RF04): giro sobre a mesa, inclinação sem limite e rotação lateral.
+        /// </summary>
+        public Quaternion Rotation { get; private set; } = Quaternion.identity;
 
         public ArchSelection Arch { get; private set; } = ArchSelection.Both;
 
@@ -73,25 +72,42 @@ namespace OdontoAR.Model
                 return;
 
             IsPlaced = placed;
-            if (!placed)
+            if (placed)
+            {
+                // Cada posicionamento começa de frente, reto e em tamanho real: um giro feito antes de
+                // "Reposicionar" deixava a arcada já tombada no lugar novo.
+                Rotation = Quaternion.identity;
+                Scale = DefaultScale;
+            }
+            else
+            {
                 SelectedKey = null;
+            }
             Changed?.Invoke();
         }
 
-        public void Rotate(float deltaYaw, float deltaPitch)
+        /// <summary>Aplica um giro (no espaço do objeto posicionado) sobre a orientação atual.</summary>
+        public void RotateBy(Quaternion delta)
         {
-            if (!IsFinite(deltaYaw) || !IsFinite(deltaPitch))
+            if (!IsFinite(delta.x) || !IsFinite(delta.y) || !IsFinite(delta.z) || !IsFinite(delta.w))
                 return;
 
-            var yaw = Mathf.Repeat(Yaw + deltaYaw, 360f);
-            var pitch = Mathf.Clamp(Pitch + deltaPitch, -MaxPitch, MaxPitch);
-            if (Mathf.Approximately(yaw, Yaw) && Mathf.Approximately(pitch, Pitch))
+            var length = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z + delta.w * delta.w);
+            if (length < 1e-6f)
                 return;
 
-            Yaw = yaw;
-            Pitch = pitch;
+            delta = new Quaternion(delta.x / length, delta.y / length, delta.z / length, delta.w / length);
+            if (Quaternion.Angle(delta, Quaternion.identity) < 0.01f)
+                return;
+
+            // Renormaliza: muitos giros pequenos seguidos acumulam erro.
+            Rotation = Normalize(delta * Rotation);
             Changed?.Invoke();
         }
+
+        /// <summary>A arcada saiu da vista padrão (giro ou zoom).</summary>
+        public bool IsViewChanged =>
+            Quaternion.Angle(Rotation, Quaternion.identity) > 0.5f || !Mathf.Approximately(Scale, DefaultScale);
 
         /// <summary>Multiplica a escala atual (ex.: razão da pinça), respeitando os limites.</summary>
         public void ScaleBy(float factor)
@@ -177,13 +193,18 @@ namespace OdontoAR.Model
         /// </summary>
         public void ResetView()
         {
-            Yaw = 0f;
-            Pitch = 0f;
+            Rotation = Quaternion.identity;
             Scale = DefaultScale;
             Changed?.Invoke();
         }
 
         static bool IsValid(Layer layer) => Enum.IsDefined(typeof(Layer), layer);
+
+        static Quaternion Normalize(Quaternion q)
+        {
+            var length = Mathf.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+            return new Quaternion(q.x / length, q.y / length, q.z / length, q.w / length);
+        }
 
         static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
     }
