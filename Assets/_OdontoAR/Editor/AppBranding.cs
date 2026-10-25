@@ -51,9 +51,13 @@ namespace OdontoAR.Editor
             PlayerSettings.SplashScreen.show = false;
             PlayerSettings.SplashScreen.showUnityLogo = false;
 
+            // O Unity só usa a imagem se retrato e paisagem forem informados; senão volta à tela padrão.
+            var launchImage = AssetDatabase.LoadAssetAtPath<Texture2D>(LaunchPath);
             PlayerSettings.iOS.SetiPhoneLaunchScreenType(iOSLaunchScreenType.ImageAndBackgroundRelative);
-            PlayerSettings.iOS.SetLaunchScreenImage(AssetDatabase.LoadAssetAtPath<Texture2D>(LaunchPath),
-                iOSLaunchScreenImageType.iPhonePortraitImage);
+            PlayerSettings.iOS.SetiPadLaunchScreenType(iOSLaunchScreenType.ImageAndBackgroundRelative);
+            PlayerSettings.iOS.SetLaunchScreenImage(launchImage, iOSLaunchScreenImageType.iPhonePortraitImage);
+            PlayerSettings.iOS.SetLaunchScreenImage(launchImage, iOSLaunchScreenImageType.iPhoneLandscapeImage);
+            PlayerSettings.iOS.SetLaunchScreenImage(launchImage, iOSLaunchScreenImageType.iPadImage);
             ConfigureLaunchBackground();
 
             Debug.Log("[OdontoAR] Ícone e tela de abertura com o símbolo do OdontoAR; splash do Unity desligada.");
@@ -68,12 +72,18 @@ namespace OdontoAR.Editor
                 return;
 
             var serialized = new SerializedObject(settings[0]);
-            var color = serialized.FindProperty("iOSLaunchScreenBackgroundColor");
-            if (color != null)
-                color.colorValue = OdontoARTheme.Bg900;
-            var fill = serialized.FindProperty("iOSLaunchScreenFillPct");
-            if (fill != null)
-                fill.floatValue = LaunchFillPercent;
+            foreach (var name in new[] { "iOSLaunchScreenBackgroundColor", "iOSLaunchScreeniPadBackgroundColor" })
+            {
+                var property = serialized.FindProperty(name);
+                if (property != null)
+                    property.colorValue = OdontoARTheme.Bg900;
+            }
+            foreach (var name in new[] { "iOSLaunchScreenFillPct", "iOSLaunchScreeniPadFillPct" })
+            {
+                var property = serialized.FindProperty(name);
+                if (property != null)
+                    property.floatValue = LaunchFillPercent;
+            }
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
