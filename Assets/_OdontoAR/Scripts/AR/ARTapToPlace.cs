@@ -26,12 +26,6 @@ namespace OdontoAR.AR
         [Tooltip("Mira mostrada sobre a mesa, onde a arcada será colocada.")]
         [SerializeField] Transform reticle;
 
-        [Tooltip("Visível enquanto a arcada não foi posicionada (dica \"aponte para a mesa\").")]
-        [SerializeField] GameObject placementHint;
-
-        [Tooltip("Visível só com a arcada posicionada (Restaurar vista, Reposicionar).")]
-        [SerializeField] GameObject placedControls;
-
         [SerializeField] float maxTapSeconds = 0.35f;
         [SerializeField] float maxTapMovementPixels = 30f;
 
@@ -46,6 +40,9 @@ namespace OdontoAR.AR
         static readonly List<ARRaycastHit> s_Hits = new();
 
         Transform ModelRoot => holder.transform;
+
+        /// <summary>A mira está sobre uma superfície: um toque posiciona a arcada (telas 4 e 5).</summary>
+        public bool HasTarget => hasTarget;
 
         bool hasTarget;
         Pose targetPose;
@@ -191,11 +188,6 @@ namespace OdontoAR.AR
 
             // Com a arcada na mesa, a detecção de planos para (os planos já são invisíveis).
             planeManager.enabled = !placed;
-
-            if (placementHint != null)
-                placementHint.SetActive(!placed);
-            if (placedControls != null)
-                placedControls.SetActive(placed);
         }
     }
 }

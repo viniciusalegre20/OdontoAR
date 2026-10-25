@@ -3,62 +3,96 @@ using UnityEngine;
 namespace OdontoAR.Theme
 {
     /// <summary>
-    /// Tokens de cor e opacidade do design system. Único lugar do projeto com valores de cor.
-    /// PROVISÓRIO: valores neutros até a T8 trazer os tokens do design system (Figma).
+    /// Tokens do design system do OdontoAR (artefato "OdontoAR" do tipo Design System, tokens.json).
+    /// Único lugar do projeto com valores de cor; medidas em pt (o Canvas usa 440 × 956 pt).
     /// </summary>
     public static class OdontoARTheme
     {
-        // Superfícies sobre a câmera (dicas, barras).
-        public static readonly Color SurfaceOverlay = new(0f, 0f, 0f, 0.55f);
+        // ---------- Superfícies fora da RA ----------
+        public static readonly Color Bg900 = Hex(0x081519);   // fundo base das telas sem câmera
+        public static readonly Color Bg800 = Hex(0x0e2228);   // campos, células
+        public static readonly Color Bg700 = Hex(0x15313a);   // cartões, folhas modais
+        public static readonly Color Line = Hex(0x24464f);    // divisores e contornos de campo
 
-        // Botões.
-        public static readonly Color ButtonBackground = new(1f, 1f, 1f, 0.92f);
-        public static readonly Color ButtonText = new(0.1f, 0.12f, 0.16f, 1f);
-        public static readonly Color ButtonSelectedBackground = new(0.13f, 0.47f, 0.86f, 1f);
-        public static readonly Color ButtonSelectedText = Color.white;
+        // ---------- Texto ----------
+        public static readonly Color Ink = Hex(0xf1f7f8);
+        public static readonly Color InkMuted = Hex(0x9cb3b9);
+        public static readonly Color InkFaint = Hex(0x6f8a91);
 
-        // Slider (abertura da boca).
-        public static readonly Color SliderTrack = new(1f, 1f, 1f, 0.35f);
-        public static readonly Color SliderFill = new(0.13f, 0.47f, 0.86f, 1f);
-        public static readonly Color SliderHandle = Color.white;
+        // ---------- Ação ----------
+        public static readonly Color Accent = Hex(0x3fd0e6);        // ciano clínico: ação, foco, seleção
+        public static readonly Color AccentStrong = Hex(0x1fb3cc);  // primário pressionado
+        public static readonly Color AccentSoft = new(63f / 255f, 208f / 255f, 230f / 255f, 0.16f);
+        public static readonly Color OnAccent = Hex(0x04262d);
+        public static readonly Color Danger = Hex(0xff7b7b);
 
-        // Texto sobre superfícies escuras.
-        public static readonly Color TextOnOverlay = Color.white;
+        // ---------- Vidro sobre a câmera ----------
+        public static readonly Color Glass = new(10f / 255f, 28f / 255f, 34f / 255f, 0.62f);
+        public static readonly Color GlassLine = new(1f, 1f, 1f, 0.14f);
+        public static readonly Color GlassFill = new(1f, 1f, 1f, 0.08f);
+        public static readonly Color SegmentActive = new(1f, 1f, 1f, 0.92f);
+        public static readonly Color Scrim = new(0f, 0f, 0f, 0.45f);    // atrás das folhas modais
+        public static readonly Color LogoHalo = new(63f / 255f, 208f / 255f, 230f / 255f, 0.45f);
 
-        // Mira de posicionamento sobre a mesa.
-        public static readonly Color PlacementReticle = new(1f, 1f, 1f, 0.9f);
+        // ---------- Camadas (iguais no modelo, nos chips e na legenda) ----------
+        public static readonly Color ToothCrown = Hex(0xf4ecdb); // camada-coroa: branco marfim
+        public static readonly Color ToothRoot = Hex(0xf0b23a);  // camada-raiz: amarelo âmbar
+        public static readonly Color Bone = Hex(0xe2cca6);       // camada-osso: bege
+        // O design system tem polpa no lugar dos nervos; a POC usa nervos, em azul (pedido do projeto),
+        // diferente do ciano de seleção.
+        public static readonly Color Nerve = Hex(0x2e73eb);
 
-        // Sombra de contato sob a arcada (o alfa é a opacidade no centro).
+        // ---------- Modelo 3D ----------
+        public const float BoneOpacity = 0.42f;             // opacity-osso
+        public const float IntegratedCrownOpacity = 0.55f;  // opacity-coroa-xray
+        public const float IntegratedRootOpacity = 0.70f;   // opacity-raiz-xray
+        public const float DimmedOpacity = 0.2f;            // opacity-dim
+        public static readonly Color Hidden = new(0f, 0f, 0f, 0f);
+        public static readonly Color SelectionOutline = Accent;
+        public const float SelectionOutlineWidth = 0.0008f; // m
+        public static readonly Color PlacementReticle = Color.white;
+        public static readonly Color PlacementReticleInner = Accent;
         public static readonly Color ContactShadow = new(0f, 0f, 0f, 0.45f);
 
-        // Estruturas anatômicas.
-        public static readonly Color ToothCrown = new(0.96f, 0.95f, 0.90f, 1f); // esmalte: marfim
-        public static readonly Color ToothRoot = new(0.91f, 0.82f, 0.62f, 1f);  // raiz e dentina: amarelada
-        public static readonly Color Bone = new(0.86f, 0.78f, 0.64f, 1f);       // maxila e mandíbula: bege
-        public static readonly Color Nerve = new(0.18f, 0.45f, 0.92f, 1f);      // nervos: azul
-
-        // Opacidades (RF08). O osso é sempre translúcido; com osso ou nervos visíveis,
-        // coroa e raiz ficam translúcidas para mostrar o que está por dentro.
-        public const float BoneOpacity = 0.35f;
-        public const float IntegratedCrownOpacity = 0.55f;
-        public const float IntegratedRootOpacity = 0.70f;
-
-        // Seleção (RF09): contorno da estrutura tocada e opacidade de todo o resto.
-        public static readonly Color SelectionOutline = new(0f, 0.9f, 1f, 1f); // ciano
-        public const float SelectionOutlineWidth = 0.0008f; // m
-        public const float DimmedOpacity = 0.2f;
-
-        // Cartão da estrutura selecionada.
-        public static readonly Color CardBackground = new(1f, 1f, 1f, 0.95f);
-        public static readonly Color CardTitle = new(0.1f, 0.12f, 0.16f, 1f);
-        public static readonly Color CardText = new(0.35f, 0.38f, 0.44f, 1f);
-
-        // Material de camada oculta (submesh do dente que não deve aparecer).
-        public static readonly Color Hidden = new(0f, 0f, 0f, 0f);
-
-        // Acabamento das estruturas (URP Lit: 0 = fosco, 1 = espelhado).
         public const float ToothSmoothness = 0.6f;
         public const float BoneSmoothness = 0.25f;
         public const float NerveSmoothness = 0.4f;
+
+        // ---------- Espaço (pt) ----------
+        public const float Space1 = 4f;
+        public const float Space2 = 8f;
+        public const float Space3 = 12f;
+        public const float Space4 = 16f;
+        public const float Space6 = 24f;
+        public const float Space8 = 32f;
+
+        // ---------- Raios (pt) ----------
+        public const float RadiusSm = 10f;
+        public const float RadiusMd = 14f;
+        public const float RadiusLg = 20f;
+        public const float RadiusXl = 28f;
+
+        // ---------- Medidas (pt) ----------
+        public const float SizeTouch = 44f;
+        public const float SizeButton = 54f;
+        public const float SizeField = 64f;
+        public const float SizeChip = 72f;
+
+        // ---------- Tipografia (pt) ----------
+        public const float LargeTitle = 34f;
+        public const float Title2 = 22f;
+        public const float Headline = 17f;
+        public const float Body = 17f;
+        public const float Subheadline = 15f;
+        public const float Footnote = 13f;
+        public const float Caption = 12f;
+        public const float CodeLarge = 26f;
+        public const float Fdi = 34f;
+
+        static Color Hex(int rgb) =>
+            new(((rgb >> 16) & 0xff) / 255f, ((rgb >> 8) & 0xff) / 255f, (rgb & 0xff) / 255f, 1f);
+
+        /// <summary>A mesma cor com outra opacidade.</summary>
+        public static Color WithAlpha(Color color, float alpha) => new(color.r, color.g, color.b, alpha);
     }
 }

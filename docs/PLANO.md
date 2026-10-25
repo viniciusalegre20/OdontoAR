@@ -63,10 +63,14 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 
 ## Semana 3 (09–15/11): interface, registro e oclusão
 
-### T8 — Interface conforme o design system
+### T8 — Interface conforme o design system ✅ (25/10)
+> Feita a partir do artefato de design system (sem Figma): tokens no `OdontoARTheme`, ícones dos SF Symbols
+> do design system rasterizados em `UI/Icons`, Inter/JetBrains Mono no lugar da SF Pro (licença), vidro sem
+> desfoque. Também: ícone do app e tela de abertura do iOS com o símbolo, sem splash do Unity, e permissão
+> de câmera lida do iOS por plugin nativo. Prévias das telas: menu `OdontoAR/Gerar prévias da interface`.
 - 🤖 Telas 1–3 (abertura, código do participante, permissão de câmera), 4–5 (coaching de superfície usando o estado do ARPlaneManager), 6–7 (barra superior, seletor, painel de camadas recolhível com `CamadaChip`), 9 (ajuda, com a seção **Créditos** do `docs/CREDITOS.md`).
 - 🤖 Navegação simples por um `ScreenRouter`; centro da tela livre nas telas de RA.
-- 🧑 Exportar os ícones como PNG para `Assets/_OdontoAR/UI/Icons`.
+- ✅ Ícones gerados a partir do design system em `Assets/_OdontoAR/UI/Icons` (não precisou exportar).
 - **Aceite:** fluxo completo da abertura até a RA sem dead ends; textos em pt-BR.
 
 ### T9 — Registro de uso (RF10)

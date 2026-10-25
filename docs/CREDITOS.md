@@ -14,9 +14,16 @@ arquivos FBX e conversão dos nervos em malha.
 > CC BY-SA exige atribuição e que os modelos **modificados** sejam distribuídos sob a mesma licença.
 > Isso vale para os arquivos 3D, não para o código do app.
 
+## Fontes
+Interface com **Inter** (Rasmus Andersson) e **JetBrains Mono** (JetBrains), ambas sob a
+**SIL Open Font License 1.1**; os textos das licenças estão em `Assets/_OdontoAR/UI/Fonts/`.
+O design system pede SF Pro, que a licença da Apple não permite embutir no app.
+
 ## Texto para o app (tela de ajuda → Créditos)
 > Modelos 3D adaptados do Z-Anatomy (z-anatomy.com), baseado no BodyParts3D © DBCLS.
 > Licença CC BY-SA 4.0.
+>
+> Fontes Inter e JetBrains Mono, licença SIL Open Font License 1.1.
 
 ## Texto para o artigo
 > Os modelos tridimensionais foram adaptados do atlas de código aberto Z-Anatomy

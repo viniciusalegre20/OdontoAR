@@ -16,9 +16,6 @@ namespace OdontoAR.Model
         [Tooltip("Pivô na altura dos côndilos da mandíbula; pai da arcada superior.")]
         [SerializeField] Transform jawHinge;
 
-        [Tooltip("Ângulo da articulação com a abertura máxima (graus).")]
-        [SerializeField] float maxOpeningDegrees = 25f;
-
         void OnEnable()
         {
             holder.State.Changed += Apply;
@@ -38,7 +35,7 @@ namespace OdontoAR.Model
             lowerArch.SetActive(state.Arch != ArchSelection.Upper);
 
             // Com +Z para a frente, girar negativo em X levanta a frente da arcada.
-            jawHinge.localRotation = Quaternion.AngleAxis(-state.Opening * maxOpeningDegrees, Vector3.right);
+            jawHinge.localRotation = Quaternion.AngleAxis(-state.Opening * ModelState.MaxOpeningDegrees, Vector3.right);
         }
     }
 }

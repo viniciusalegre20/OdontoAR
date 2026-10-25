@@ -31,6 +31,9 @@ namespace OdontoAR.Model
         public const float MaxScale = 4f;
         public const float MaxPitch = 80f;
 
+        /// <summary>Ângulo da articulação com a abertura máxima (design system: 0–30°).</summary>
+        public const float MaxOpeningDegrees = 30f;
+
         /// <summary>Disparado sempre que algum valor muda.</summary>
         public event Action Changed;
 
@@ -47,7 +50,7 @@ namespace OdontoAR.Model
 
         public ArchSelection Arch { get; private set; } = ArchSelection.Both;
 
-        /// <summary>Abertura da boca (RF06): 0 = fechada, 1 = abertura máxima.</summary>
+        /// <summary>Abertura da boca (RF06): 0 = fechada, 1 = <see cref="MaxOpeningDegrees"/>.</summary>
         public float Opening { get; private set; }
 
         // Todas as camadas começam visíveis (visualização integrada).

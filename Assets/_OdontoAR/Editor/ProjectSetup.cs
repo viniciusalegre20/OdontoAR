@@ -29,7 +29,7 @@ namespace OdontoAR.Editor
         // Outro membro da equipe que for assinar troca pelo próprio Team ID.
         public const string AppleTeamId = "9BVJCCNT6Z";
         public const string CameraUsageDescription =
-            "O OdontoAR usa a câmera para exibir a arcada dentária em realidade aumentada sobre a mesa.";
+            "A câmera é usada para posicionar o modelo 3D sobre a mesa. Nenhuma imagem é gravada.";
 
         const string XRFolder = "Assets/XR";
         const string XRSettingsPath = XRFolder + "/XRGeneralSettingsPerBuildTarget.asset";
@@ -55,6 +55,7 @@ namespace OdontoAR.Editor
             ok &= ConfigureXRManagement();
             ConfigureARKit();
             ok &= ConfigureURPForAR();
+            ok &= AppBranding.Apply();
             AssetDatabase.SaveAssets();
 
             // Por último, porque reimporta o projeto.

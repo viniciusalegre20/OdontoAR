@@ -335,7 +335,6 @@ MonoBehaviour:
   upperArch: {fileID: 6822628628049090106}
   lowerArch: {fileID: 2735466048322659340}
   jawHinge: {fileID: 6519284685038565697}
-  maxOpeningDegrees: 25
 --- !u!114 &1709069565268504609
 MonoBehaviour:
   m_ObjectHideFlags: 0

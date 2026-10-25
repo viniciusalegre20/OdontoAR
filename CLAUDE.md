@@ -47,6 +47,7 @@ O build iOS exige o **Xcode** instalado e selecionado (`xcode-select -p` → `/A
 - Build iOS por terminal (após T2):
   `"/Applications/Unity/Hub/Editor/6000.6.4f1/Unity.app/Contents/MacOS/Unity" -batchmode -quit -projectPath . -executeMethod OdontoAR.Editor.BuildScript.BuildIOS -logFile Builds/build.log`
 - Menus `OdontoAR/...` por terminal: `-batchmode -projectPath . -executeMethod OdontoAR.Editor.<Classe>.<Método>` **sem `-quit`** (os métodos chamam `EditorApplication.Exit`; o de criar cena espera uma importação assíncrona).
+  Prévias da interface (T8, PNGs em `Builds/Previas`): `-executeMethod OdontoAR.Editor.UIPreview.Capture`.
   Validar o modelo (T5): `-executeMethod OdontoAR.Editor.ModelValidator.ValidateFromCommandLine` (sai com 1 se houver erro).
 - Testes EditMode (sem `-quit`):
   `... -batchmode -projectPath . -runTests -testPlatform EditMode -testResults Builds/tests.xml`

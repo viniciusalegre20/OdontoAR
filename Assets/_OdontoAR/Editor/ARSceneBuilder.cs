@@ -41,6 +41,7 @@ namespace OdontoAR.Editor
         const string ArcadasPrefabPath = PrefabsFolder + "/Arcadas.prefab";
         const string PlanePrefabPath = PrefabsFolder + "/PlanoAR.prefab";
         const string ReticleMaterialPath = MaterialsFolder + "/MiraPosicionamento.mat";
+        const string ReticleInnerMaterialPath = MaterialsFolder + "/MiraPosicionamentoInterna.mat";
         const string ReticleMeshPath = ModelsFolder + "/MiraPosicionamento.asset";
         const string ShadowMaterialPath = MaterialsFolder + "/SombraContato.mat";
         const string ShadowTexturePath = MaterialsFolder + "/SombraContato.png";
@@ -54,12 +55,15 @@ namespace OdontoAR.Editor
         const float CondyleInset = 0.01f;
 
         // Anel da mira, em metros.
+        // Retículo (design system): anel branco, anel interno tracejado ciano e ponto central. Em metros.
         const float ReticleInnerRadius = 0.045f;
         const float ReticleOuterRadius = 0.055f;
+        const float ReticleDashInner = 0.030f;
+        const float ReticleDashOuter = 0.034f;
+        const int ReticleDashes = 24;
+        const float ReticleDotRadius = 0.004f;
         const int ReticleSegments = 64;
 
-        // Resolução de referência da interface: iPhone em retrato (pixels).
-        static readonly Vector2 ReferenceResolution = new(1170f, 2532f);
 
         [MenuItem("OdontoAR/Criar cena AR")]
         public static void CreateARScene()
@@ -111,7 +115,9 @@ namespace OdontoAR.Editor
 
             CreateLight();
             new GameObject("MonitorFPS", typeof(FrameRateMonitor));
-            new GameObject("AR Session", typeof(ARSession), typeof(ARInputManager));
+            // A sessão (e a câmera) só liga na tela de RA, depois da permissão: quem liga é o ScreenRouter.
+            var session = new GameObject("AR Session", typeof(ARSession), typeof(ARInputManager)).GetComponent<ARSession>();
+            session.enabled = false;
 
             var (origin, arCamera) = CreateXROrigin();
             var planeManager = origin.gameObject.AddComponent<ARPlaneManager>();
@@ -127,7 +133,6 @@ namespace OdontoAR.Editor
             var reticle = CreateReticle();
 
             CreateEventSystem();
-            var ui = CreateCanvas();
 
             var tapToPlace = origin.gameObject.AddComponent<ARTapToPlace>();
             SetReference(tapToPlace, "raycastManager", raycastManager);
@@ -136,8 +141,6 @@ namespace OdontoAR.Editor
             SetReference(tapToPlace, "holder", holder);
             SetReference(tapToPlace, "arCamera", arCamera);
             SetReference(tapToPlace, "reticle", reticle);
-            SetReference(tapToPlace, "placementHint", ui.Hint);
-            SetReference(tapToPlace, "placedControls", ui.PlacedControls);
 
             var gestures = origin.gameObject.AddComponent<ModelGestures>();
             SetReference(gestures, "holder", holder);
@@ -148,31 +151,15 @@ namespace OdontoAR.Editor
             SetReference(selection, "outlineMaterial", AssetDatabase.LoadAssetAtPath<Material>(ModelMaterials.OutlinePath));
             SetArray(selection, "structures", arcadas.GetComponentsInChildren<SelectableStructure>(true));
 
-            var card = ui.Canvas.AddComponent<StructureCard>();
-            SetReference(card, "holder", holder);
-            SetReference(card, "catalog", AssetDatabase.LoadAssetAtPath<StructureCatalog>(CatalogPath));
-            SetReference(card, "selection", selection);
-            SetReference(card, "arCamera", arCamera);
-            SetReference(card, "card", ui.Card);
-            SetReference(card, "title", ui.CardTitle);
-            SetReference(card, "layer", ui.CardLayer);
-
-            var archControls = ui.PlacedControls.AddComponent<ArchControls>();
-            SetReference(archControls, "holder", holder);
-            SetReference(archControls, "bothButton", ui.BothButton);
-            SetReference(archControls, "upperButton", ui.UpperButton);
-            SetReference(archControls, "lowerButton", ui.LowerButton);
-            SetReference(archControls, "openingSlider", ui.OpeningSlider);
-
-            var layerControls = ui.PlacedControls.AddComponent<LayerControls>();
-            SetReference(layerControls, "holder", holder);
-            SetReference(layerControls, "crownButton", ui.CrownButton);
-            SetReference(layerControls, "rootButton", ui.RootButton);
-            SetReference(layerControls, "boneButton", ui.BoneButton);
-            SetReference(layerControls, "nervesButton", ui.NervesButton);
-
-            UnityEventTools.AddPersistentListener(ui.ResetButton.onClick, holder.ResetView);
-            UnityEventTools.AddPersistentListener(ui.RepositionButton.onClick, tapToPlace.Reposition);
+            ARUIBuilder.Build(new ARUIBuilder.Context
+            {
+                Holder = holder,
+                TapToPlace = tapToPlace,
+                Selection = selection,
+                Camera = arCamera,
+                Session = session,
+                Catalog = AssetDatabase.LoadAssetAtPath<StructureCatalog>(CatalogPath),
+            });
 
             if (!EditorSceneManager.SaveScene(scene, ScenePath))
             {
@@ -445,38 +432,64 @@ namespace OdontoAR.Editor
 
         static Transform CreateReticle()
         {
-            var go = new GameObject("MiraPosicionamento", typeof(MeshFilter), typeof(MeshRenderer));
-            go.GetComponent<MeshFilter>().sharedMesh = BuildRingMesh();
+            var go = new GameObject("MiraPosicionamento", typeof(MeshFilter), typeof(MeshRenderer), typeof(ReticlePulse));
+            go.GetComponent<MeshFilter>().sharedMesh = BuildReticleMesh();
             var meshRenderer = go.GetComponent<MeshRenderer>();
-            meshRenderer.sharedMaterial = BuildReticleMaterial();
+            meshRenderer.sharedMaterials = new[]
+            {
+                BuildTransparentUnlit(ReticleMaterialPath, OdontoARTheme.PlacementReticle, null),
+                BuildTransparentUnlit(ReticleInnerMaterialPath, OdontoARTheme.PlacementReticleInner, null),
+            };
             meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             meshRenderer.receiveShadows = false;
             go.SetActive(false); // aparece quando encontra a mesa
             return go.transform;
         }
 
-        /// <summary>Anel plano no XZ, virado para cima, com um leve afastamento da mesa.</summary>
-        static Mesh BuildRingMesh()
+        /// <summary>
+        /// Malha plana no XZ, um pouco acima da mesa. Submesh 0: anel branco. Submesh 1: traços ciano
+        /// do anel interno e o ponto central.
+        /// </summary>
+        static Mesh BuildReticleMesh()
         {
             const float lift = 0.001f;
-            var vertices = new Vector3[ReticleSegments * 2];
-            var triangles = new int[ReticleSegments * 6];
-            for (var i = 0; i < ReticleSegments; i++)
-            {
-                var angle = i * Mathf.PI * 2f / ReticleSegments;
-                var dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
-                vertices[i * 2] = dir * ReticleInnerRadius + Vector3.up * lift;
-                vertices[i * 2 + 1] = dir * ReticleOuterRadius + Vector3.up * lift;
+            var vertices = new List<Vector3>();
+            var outer = new List<int>();
+            var inner = new List<int>();
 
-                var next = (i + 1) % ReticleSegments;
-                var t = i * 6;
-                triangles[t] = i * 2;
-                triangles[t + 1] = next * 2;
-                triangles[t + 2] = i * 2 + 1;
-                triangles[t + 3] = i * 2 + 1;
-                triangles[t + 4] = next * 2;
-                triangles[t + 5] = next * 2 + 1;
+            void Arc(List<int> triangles, float r0, float r1, float from, float to, int steps)
+            {
+                var start = vertices.Count;
+                for (var i = 0; i <= steps; i++)
+                {
+                    var angle = Mathf.Lerp(from, to, i / (float)steps);
+                    var dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+                    vertices.Add(dir * r0 + Vector3.up * lift);
+                    vertices.Add(dir * r1 + Vector3.up * lift);
+                }
+                for (var i = 0; i < steps; i++)
+                {
+                    var a = start + i * 2;
+                    triangles.AddRange(new[] { a, a + 2, a + 1, a + 1, a + 2, a + 3 });
+                }
             }
+
+            Arc(outer, ReticleInnerRadius, ReticleOuterRadius, 0f, Mathf.PI * 2f, ReticleSegments);
+
+            var dash = Mathf.PI * 2f / ReticleDashes;
+            for (var d = 0; d < ReticleDashes; d++)
+                Arc(inner, ReticleDashInner, ReticleDashOuter, d * dash, d * dash + dash * 0.55f, 3);
+
+            // Ponto central: leque de triângulos.
+            var center = vertices.Count;
+            vertices.Add(Vector3.up * lift);
+            for (var i = 0; i < 16; i++)
+            {
+                var angle = i * Mathf.PI * 2f / 16;
+                vertices.Add(new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * ReticleDotRadius + Vector3.up * lift);
+            }
+            for (var i = 0; i < 16; i++)
+                inner.AddRange(new[] { center, center + 1 + (i + 1) % 16, center + 1 + i });
 
             var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(ReticleMeshPath);
             if (mesh == null)
@@ -487,16 +500,15 @@ namespace OdontoAR.Editor
 
             mesh.Clear();
             mesh.name = "MiraPosicionamento";
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
+            mesh.SetVertices(vertices);
+            mesh.subMeshCount = 2;
+            mesh.SetTriangles(outer, 0);
+            mesh.SetTriangles(inner, 1);
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             EditorUtility.SetDirty(mesh);
             return mesh;
         }
-
-        static Material BuildReticleMaterial() =>
-            BuildTransparentUnlit(ReticleMaterialPath, OdontoARTheme.PlacementReticle, null);
 
         static Material BuildTransparentUnlit(string path, Color color, Texture2D texture)
         {
@@ -583,228 +595,6 @@ namespace OdontoAR.Editor
         {
             new GameObject("EventSystem",
                 typeof(UnityEngine.EventSystems.EventSystem), typeof(InputSystemUIInputModule));
-        }
-
-        struct UIRefs
-        {
-            public GameObject Hint;
-            public GameObject PlacedControls;
-            public Button ResetButton;
-            public Button RepositionButton;
-            public Button BothButton;
-            public Button UpperButton;
-            public Button LowerButton;
-            public Slider OpeningSlider;
-            public Button CrownButton;
-            public Button RootButton;
-            public Button BoneButton;
-            public Button NervesButton;
-            public GameObject Canvas;
-            public RectTransform Card;
-            public TextMeshProUGUI CardTitle;
-            public TextMeshProUGUI CardLayer;
-        }
-
-        static UIRefs CreateCanvas()
-        {
-            var canvasGo = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            var scaler = canvasGo.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = ReferenceResolution;
-            scaler.matchWidthOrHeight = 0.5f;
-
-            var resources = new TMP_DefaultControls.Resources
-            {
-                standard = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd"),
-            };
-
-            // Dica no topo, abaixo da Dynamic Island.
-            var hint = new GameObject("DicaPosicionar", typeof(RectTransform), typeof(Image));
-            hint.transform.SetParent(canvasGo.transform, false);
-            var hintRect = (RectTransform)hint.transform;
-            hintRect.anchorMin = hintRect.anchorMax = new Vector2(0.5f, 1f);
-            hintRect.pivot = new Vector2(0.5f, 1f);
-            hintRect.anchoredPosition = new Vector2(0f, -220f);
-            hintRect.sizeDelta = new Vector2(1000f, 220f);
-            var hintImage = hint.GetComponent<Image>();
-            hintImage.sprite = resources.standard;
-            hintImage.type = Image.Type.Sliced;
-            hintImage.color = OdontoARTheme.SurfaceOverlay;
-            hintImage.raycastTarget = false;
-
-            var hintText = CreateText(hint.transform,
-                "Afaste-se um pouco e aponte para a mesa, movendo o iPhone devagar. Quando o círculo aparecer, toque na tela para posicionar a arcada.", 44f,
-                OdontoARTheme.TextOnOverlay);
-            var hintTextRect = (RectTransform)hintText.transform;
-            hintTextRect.anchorMin = Vector2.zero;
-            hintTextRect.anchorMax = Vector2.one;
-            hintTextRect.offsetMin = new Vector2(40f, 20f);
-            hintTextRect.offsetMax = new Vector2(-40f, -20f);
-
-            // Controles na base, acima do indicador de início do iPhone; aparecem com a arcada posicionada.
-            var controls = new GameObject("ControlesPosicionado", typeof(RectTransform), typeof(VerticalLayoutGroup),
-                typeof(ContentSizeFitter));
-            controls.transform.SetParent(canvasGo.transform, false);
-            var controlsRect = (RectTransform)controls.transform;
-            controlsRect.anchorMin = controlsRect.anchorMax = new Vector2(0.5f, 0f);
-            controlsRect.pivot = new Vector2(0.5f, 0f);
-            controlsRect.anchoredPosition = new Vector2(0f, 120f);
-            controlsRect.sizeDelta = new Vector2(1000f, 0f);
-            var column = controls.GetComponent<VerticalLayoutGroup>();
-            column.spacing = 30f;
-            column.childControlWidth = column.childControlHeight = true;
-            column.childForceExpandWidth = true;
-            column.childForceExpandHeight = false;
-            controls.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            // Camadas (RF08).
-            var layersRow = CreateRow(controls.transform, "Camadas", 110f, 16f);
-            var crown = CreateButton(layersRow.transform, resources, "BotaoCoroa", "Coroa");
-            var root = CreateButton(layersRow.transform, resources, "BotaoRaiz", "Raiz");
-            var bone = CreateButton(layersRow.transform, resources, "BotaoOsso", "Osso");
-            var nerves = CreateButton(layersRow.transform, resources, "BotaoNervos", "Nervos");
-
-            // Abertura da boca (RF06).
-            var openingRow = CreateRow(controls.transform, "Abertura", 110f, 30f);
-            var openingImage = openingRow.AddComponent<Image>();
-            openingImage.sprite = resources.standard;
-            openingImage.type = Image.Type.Sliced;
-            openingImage.color = OdontoARTheme.SurfaceOverlay;
-            var openingLayout = openingRow.GetComponent<HorizontalLayoutGroup>();
-            openingLayout.padding = new RectOffset(40, 50, 0, 0);
-            openingLayout.childForceExpandWidth = false;
-            var openingLabel = CreateText(openingRow.transform, "Abertura", 42f, OdontoARTheme.TextOnOverlay);
-            openingLabel.gameObject.AddComponent<LayoutElement>().preferredWidth = 220f;
-            var opening = CreateSlider(openingRow.transform);
-
-            // Seletor de arcada (RF03).
-            var selector = CreateRow(controls.transform, "SeletorArcada", 120f, 20f);
-            var both = CreateButton(selector.transform, resources, "BotaoAmbas", "Ambas");
-            var upper = CreateButton(selector.transform, resources, "BotaoSuperior", "Superior");
-            var lower = CreateButton(selector.transform, resources, "BotaoInferior", "Inferior");
-
-            var view = CreateRow(controls.transform, "ControlesVista", 140f, 40f);
-            var reset = CreateButton(view.transform, resources, "BotaoRestaurarVista", "Restaurar vista");
-            var reposition = CreateButton(view.transform, resources, "BotaoReposicionar", "Reposicionar");
-
-            controls.SetActive(false);
-
-            // Cartão da estrutura selecionada (RF09): o StructureCard o posiciona acima da estrutura.
-            var card = new GameObject("CartaoEstrutura", typeof(RectTransform), typeof(Image),
-                typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
-            card.transform.SetParent(canvasGo.transform, false);
-            var cardRect = (RectTransform)card.transform;
-            cardRect.anchorMin = cardRect.anchorMax = new Vector2(0.5f, 0.5f);
-            cardRect.pivot = new Vector2(0.5f, 0f);
-            cardRect.sizeDelta = new Vector2(900f, 0f);
-            var cardImage = card.GetComponent<Image>();
-            cardImage.sprite = resources.standard;
-            cardImage.type = Image.Type.Sliced;
-            cardImage.color = OdontoARTheme.CardBackground;
-            cardImage.raycastTarget = false; // o toque passa para o modelo
-            var cardLayout = card.GetComponent<VerticalLayoutGroup>();
-            cardLayout.padding = new RectOffset(36, 36, 24, 24);
-            cardLayout.spacing = 8f;
-            cardLayout.childControlWidth = cardLayout.childControlHeight = true;
-            cardLayout.childForceExpandWidth = true;
-            cardLayout.childForceExpandHeight = false;
-            card.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            var cardTitle = CreateText(card.transform, "", 44f, OdontoARTheme.CardTitle);
-            cardTitle.fontStyle = FontStyles.Bold;
-            var cardLayer = CreateText(card.transform, "", 36f, OdontoARTheme.CardText);
-            card.SetActive(false);
-
-            return new UIRefs
-            {
-                Hint = hint,
-                PlacedControls = controls,
-                ResetButton = reset,
-                RepositionButton = reposition,
-                BothButton = both,
-                UpperButton = upper,
-                LowerButton = lower,
-                OpeningSlider = opening,
-                CrownButton = crown,
-                RootButton = root,
-                BoneButton = bone,
-                NervesButton = nerves,
-                Canvas = canvasGo,
-                Card = cardRect,
-                CardTitle = cardTitle,
-                CardLayer = cardLayer,
-            };
-        }
-
-        /// <summary>Linha horizontal de altura fixa dentro da coluna de controles.</summary>
-        static GameObject CreateRow(Transform parent, string name, float height, float spacing)
-        {
-            var row = new GameObject(name, typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
-            row.transform.SetParent(parent, false);
-            row.GetComponent<LayoutElement>().preferredHeight = height;
-            var layout = row.GetComponent<HorizontalLayoutGroup>();
-            layout.spacing = spacing;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = layout.childControlHeight = true;
-            layout.childForceExpandWidth = layout.childForceExpandHeight = true;
-            return row;
-        }
-
-        static Slider CreateSlider(Transform parent)
-        {
-            var go = DefaultControls.CreateSlider(new DefaultControls.Resources
-            {
-                standard = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd"),
-                background = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Background.psd"),
-                knob = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd"),
-            });
-            go.name = "SliderAbertura";
-            go.transform.SetParent(parent, false);
-            var element = go.AddComponent<LayoutElement>();
-            element.flexibleWidth = 1f;
-            element.preferredHeight = 70f;
-
-            var slider = go.GetComponent<Slider>();
-            slider.minValue = 0f;
-            slider.maxValue = 1f;
-            slider.value = 0f;
-
-            go.transform.Find("Background").GetComponent<Image>().color = OdontoARTheme.SliderTrack;
-            go.transform.Find("Fill Area/Fill").GetComponent<Image>().color = OdontoARTheme.SliderFill;
-            var handle = slider.handleRect;
-            handle.GetComponent<Image>().color = OdontoARTheme.SliderHandle;
-            handle.sizeDelta = new Vector2(70f, 0f); // alvo de toque do tamanho do dedo
-            return slider;
-        }
-
-        static Button CreateButton(Transform parent, TMP_DefaultControls.Resources resources, string name, string label)
-        {
-            var go = TMP_DefaultControls.CreateButton(resources);
-            go.name = name;
-            go.transform.SetParent(parent, false);
-            go.GetComponent<Image>().color = OdontoARTheme.ButtonBackground;
-
-            var text = go.GetComponentInChildren<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
-            text.text = label;
-            text.fontSize = 42f;
-            text.color = OdontoARTheme.ButtonText;
-            return go.GetComponent<Button>();
-        }
-
-        static TextMeshProUGUI CreateText(Transform parent, string content, float size, Color color)
-        {
-            var go = new GameObject("Texto", typeof(RectTransform), typeof(TextMeshProUGUI));
-            go.transform.SetParent(parent, false);
-            var text = go.GetComponent<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
-            text.text = content;
-            text.fontSize = size;
-            text.color = color;
-            text.alignment = TextAlignmentOptions.Center;
-            text.textWrappingMode = TextWrappingModes.Normal;
-            text.raycastTarget = false;
-            return text;
         }
 
         // ---------- Utilitários ----------
