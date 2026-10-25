@@ -73,7 +73,10 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 - ✅ Ícones gerados a partir do design system em `Assets/_OdontoAR/UI/Icons` (não precisou exportar).
 - **Aceite:** fluxo completo da abertura até a RA sem dead ends; textos em pt-BR.
 
-### T9 — Registro de uso (RF10)
+### T9 — Registro de uso (RF10) ✅ (24/10)
+> Formato do JSON conforme `registro.md` do design system (camadas da POC: coroa, raiz, osso, nervos).
+> Compartilhamento por plugin nativo mínimo (`Plugins/iOS/OdontoARShare.mm`), sem pacote de terceiros.
+> Tela 10 abre pelo botão de relógio da barra da RA. Verificado com exportação por AirDrop.
 - 🤖 `UsageLogger`: sessões, duração, toggles de camada e estruturas tocadas, gravando JSON em `Application.persistentDataPath`, identificado só pelo código do participante.
 - 🤖 Tela 10 (registro) com resumo e botão "Exportar registro (JSON)" via share sheet do iOS (pacote NativeShare ou plugin nativo mínimo).
 - 🤖 Testes EditMode do logger (serialização, sessão interrompida).

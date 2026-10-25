@@ -55,7 +55,7 @@ namespace OdontoAR.Editor
             }
 
             GameObject Find(string path) => root.Find(path).gameObject;
-            var screens = new[] { "Tela01_Abertura", "Tela02_Codigo", "Tela03_Permissao", "Tela_RA" };
+            var screens = new[] { "Tela01_Abertura", "Tela02_Codigo", "Tela03_Permissao", "Tela_RA", "Tela10_Registro" };
             void Only(string screen)
             {
                 foreach (var s in screens)
@@ -118,6 +118,9 @@ namespace OdontoAR.Editor
 
             AR(search: false, find: false, placed: true, withCard: false, withHelp: true);
             Shot(camera, target, "09_ajuda");
+
+            Only("Tela10_Registro");
+            Shot(camera, target, "10_registro");
 
             Object.DestroyImmediate(cameraGo);
             Debug.Log($"[OdontoAR] Prévias salvas em {OutputFolder}.");

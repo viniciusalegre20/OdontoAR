@@ -28,6 +28,8 @@ namespace OdontoAR.Editor
         // Personal Team do Apple ID usado para assinar (Xcode → Settings → Accounts).
         // Outro membro da equipe que for assinar troca pelo próprio Team ID.
         public const string AppleTeamId = "9BVJCCNT6Z";
+        public const string AppVersion = "1.0";
+
         public const string CameraUsageDescription =
             "A câmera é usada para posicionar o modelo 3D sobre a mesa. Nenhuma imagem é gravada.";
 
@@ -73,6 +75,7 @@ namespace OdontoAR.Editor
         static void ConfigurePlayer()
         {
             PlayerSettings.productName = ProductName;
+            PlayerSettings.bundleVersion = AppVersion; // vai no JSON do registro de uso
             PlayerSettings.companyName = CompanyName;
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS, BundleId);
             PlayerSettings.iOS.cameraUsageDescription = CameraUsageDescription;

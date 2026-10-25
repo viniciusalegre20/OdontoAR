@@ -1,4 +1,5 @@
 using OdontoAR.AR;
+using OdontoAR.Logging;
 using OdontoAR.Model;
 using OdontoAR.Theme;
 using OdontoAR.UI;
@@ -12,9 +13,10 @@ using UnityEngine.XR.ARFoundation;
 namespace OdontoAR.Editor
 {
     /// <summary>
-    /// T8: monta a interface conforme o design system (artefato "OdontoAR", tipo Design System):
+    /// T8/T9: monta a interface conforme o design system (artefato "OdontoAR", tipo Design System):
     /// telas 1–3 (abertura, código, permissão), a RA (barra superior, seletor segmentado, pílulas de
-    /// status, painel de camadas, cartão de estrutura) e a folha de ajuda com os créditos.
+    /// status, painel de camadas, cartão de estrutura), a folha de ajuda com os créditos e o registro de
+    /// uso (tela 10), além do UsageRecorder.
     /// Medidas em pt: o Canvas usa a resolução de referência do iPhone 16 Pro Max, 440 × 956 pt.
     /// </summary>
     public static class ARUIBuilder
@@ -56,10 +58,17 @@ namespace OdontoAR.Editor
             var permission = BuildPermission(canvas, router);
             var (ar, help) = BuildAR(canvas, router, context);
 
+            var recorder = new GameObject("RegistroDeUso").AddComponent<UsageRecorder>();
+            Set(recorder, "holder", context.Holder);
+            Set(recorder, "tapToPlace", context.TapToPlace);
+            Set(recorder, "router", router);
+            var log = BuildLog(canvas, router, recorder);
+
             Set(router, "opening", opening);
             Set(router, "code", code);
             Set(router, "permission", permission);
             Set(router, "ar", ar);
+            Set(router, "log", log);
             Set(router, "session", context.Session);
             Set(router, "holder", context.Holder);
             Set(router, "help", help);
@@ -68,6 +77,7 @@ namespace OdontoAR.Editor
             code.SetActive(false);
             permission.SetActive(false);
             ar.SetActive(false);
+            log.SetActive(false);
         }
 
         // ---------- Tela 1: Abertura ----------
@@ -271,6 +281,124 @@ namespace OdontoAR.Editor
             Text(texts.transform, detail, kit.Regular, OdontoARTheme.Footnote, OdontoARTheme.InkMuted);
         }
 
+        // ---------- Tela 10: Registro de uso ----------
+
+        static GameObject BuildLog(RectTransform canvas, ScreenRouter router, UsageRecorder recorder)
+        {
+            var screen = FullScreen(canvas, "Tela10_Registro", OdontoARTheme.Bg900);
+            var safe = SafeContent(screen);
+            var back = BackButton(safe, "Arcadas");
+            UnityEventTools.AddPersistentListener(back.onClick, router.GoToAR);
+
+            var stack = TopStack(safe, 56f);
+            ((VerticalLayoutGroup)stack.GetComponent<LayoutGroup>()).spacing = 10f;
+            Text(stack, "Registro de uso", kit.Bold, OdontoARTheme.LargeTitle, OdontoARTheme.Ink);
+
+            SectionLabel(stack, "PARTICIPANTE");
+            var list = VStack(stack, "Lista", 0f);
+            Img((RectTransform)list.transform, kit.Rounded(OdontoARTheme.RadiusMd), OdontoARTheme.Bg700, raycast: false);
+            var code = ListCell(list.transform, "person", "Código", kit.Mono, OdontoARTheme.Ink);
+            var divider = Rect(list.transform, "Divisor");
+            Size(divider, height: 1f);
+            Img(Stretch(Rect(divider, "Linha")), null, OdontoARTheme.Line, raycast: false, sliced: false)
+                .rectTransform.offsetMin = new Vector2(52f, 0f);
+            var last = ListCell(list.transform, "clock", "Última sessão", kit.Regular, OdontoARTheme.InkMuted);
+
+            SectionLabel(stack, "RESUMO");
+            var metrics = HStack(stack, "Metricas", 10f);
+            metrics.childForceExpandWidth = metrics.childForceExpandHeight = true;
+            Size((RectTransform)metrics.transform, height: 84f);
+            var total = Metric(metrics.transform, "Tempo total de uso");
+            var sessions = Metric(metrics.transform, "Sessões");
+
+            SectionLabel(stack, "CAMADAS MAIS ACESSADAS");
+            var chart = VStack(stack, "Grafico", 12f);
+            chart.padding = new RectOffset(16, 16, 16, 16);
+            Img((RectTransform)chart.transform, kit.Rounded(OdontoARTheme.RadiusMd), OdontoARTheme.Bg700, raycast: false);
+            var labels = new Object[4];
+            var fills = new Object[4];
+            var images = new Object[4];
+            var counts = new Object[4];
+            for (var i = 0; i < 4; i++)
+            {
+                var row = HStack(chart.transform, "Barra", 10f);
+                row.childAlignment = TextAnchor.MiddleLeft;
+                var label = Text(row.transform, "Camada", kit.Medium, OdontoARTheme.Subheadline, OdontoARTheme.Ink);
+                Size(label.rectTransform, width: 64f);
+                var track = Rect(row.transform, "Trilho");
+                Size(track, height: 10f, flexibleWidth: 1f);
+                Img(track, kit.Rounded(5f), OdontoARTheme.WithAlpha(Color.white, 0.07f), raycast: false);
+                var fill = Rect(track, "Preenchimento");
+                fill.anchorMin = Vector2.zero;
+                fill.anchorMax = new Vector2(0.5f, 1f);
+                fill.offsetMin = fill.offsetMax = Vector2.zero;
+                var fillImage = Img(fill, kit.Rounded(5f), OdontoARTheme.ToothRoot, raycast: false);
+                var count = Text(row.transform, "0", kit.Mono, OdontoARTheme.Subheadline, OdontoARTheme.Ink,
+                    TextAlignmentOptions.MidlineRight);
+                Size(count.rectTransform, width: 44f);
+                labels[i] = label;
+                fills[i] = fill;
+                images[i] = fillImage;
+                counts[i] = count;
+            }
+            Text(chart.transform, "Número de vezes que cada camada foi ativada", kit.Regular, OdontoARTheme.Footnote,
+                OdontoARTheme.InkMuted);
+
+            var export = PrimaryButton(safe, "Exportar registro (JSON)", "share");
+            BottomStretch((RectTransform)export.transform, 44f, OdontoARTheme.SizeButton);
+            var note = HStack(safe, "Privacidade", 6f);
+            note.childAlignment = TextAnchor.MiddleCenter;
+            BottomStretch((RectTransform)note.transform, 12f, 20f);
+            Size(Icon(note.transform, "lock", 14f, OdontoARTheme.InkMuted).rectTransform, 14f, 14f);
+            Text(note.transform, "O registro fica salvo apenas neste aparelho", kit.Regular, OdontoARTheme.Footnote,
+                OdontoARTheme.InkMuted);
+
+            var logic = screen.AddComponent<UsageLogScreen>();
+            Set(logic, "recorder", recorder);
+            Set(logic, "code", code);
+            Set(logic, "lastSession", last);
+            Set(logic, "totalTime", total);
+            Set(logic, "sessions", sessions);
+            SetArray(logic, "barLabels", labels);
+            SetArray(logic, "barFills", fills);
+            SetArray(logic, "barImages", images);
+            SetArray(logic, "barCounts", counts);
+            Set(logic, "exportButton", export);
+            return screen;
+        }
+
+        static void SectionLabel(Transform parent, string text)
+        {
+            Spacer(parent, 4f);
+            Text(parent, text, kit.SemiBold, OdontoARTheme.Footnote, OdontoARTheme.InkMuted);
+        }
+
+        /// <summary>Célula de lista agrupada (52 pt): ícone ciano, rótulo e valor à direita.</summary>
+        static TextMeshProUGUI ListCell(Transform parent, string icon, string label, TMP_FontAsset valueFont, Color valueColor)
+        {
+            var row = HStack(parent, "Celula", 12f);
+            row.padding = new RectOffset(16, 16, 0, 0);
+            row.childAlignment = TextAnchor.MiddleLeft;
+            Size((RectTransform)row.transform, height: 52f);
+            Size(Icon(row.transform, icon, 22f, OdontoARTheme.Accent).rectTransform, 22f, 22f);
+            Size(Text(row.transform, label, kit.Regular, OdontoARTheme.Body, OdontoARTheme.Ink).rectTransform,
+                flexibleWidth: 1f);
+            return Text(row.transform, "—", valueFont, OdontoARTheme.Body, valueColor, TextAlignmentOptions.MidlineRight);
+        }
+
+        /// <summary>Bloco de métrica: rótulo pequeno e valor grande.</summary>
+        static TextMeshProUGUI Metric(Transform parent, string label)
+        {
+            var block = VStack(parent, "Metrica", 4f);
+            block.padding = new RectOffset(16, 16, 14, 14);
+            block.childAlignment = TextAnchor.MiddleLeft;
+            Img((RectTransform)block.transform, kit.Rounded(OdontoARTheme.RadiusMd), OdontoARTheme.Bg700, raycast: false);
+            Text(block.transform, label, kit.Regular, OdontoARTheme.Footnote, OdontoARTheme.InkMuted);
+            var value = Text(block.transform, "0", kit.Bold, 26f, OdontoARTheme.Ink);
+            value.textWrappingMode = TextWrappingModes.NoWrap;
+            return value;
+        }
+
         // ---------- Telas 4–8: RA ----------
 
         static (GameObject ar, HelpSheet help) BuildAR(RectTransform canvas, ScreenRouter router, Context context)
@@ -313,6 +441,12 @@ namespace OdontoAR.Editor
             helpButton = GlassCircle(bar, "q");
             Place((RectTransform)helpButton.transform, new Vector2(1f, 1f), new Vector2(-12f, 0f),
                 new Vector2(OdontoARTheme.SizeTouch, OdontoARTheme.SizeTouch), pivot: new Vector2(1f, 1f));
+
+            // Registro de uso (tela 10), ao lado da ajuda.
+            var logButton = GlassCircle(bar, "clock");
+            Place((RectTransform)logButton.transform, new Vector2(1f, 1f), new Vector2(-12f - OdontoARTheme.SizeTouch - 8f, 0f),
+                new Vector2(OdontoARTheme.SizeTouch, OdontoARTheme.SizeTouch), pivot: new Vector2(1f, 1f));
+            UnityEventTools.AddPersistentListener(logButton.onClick, router.GoToLog);
 
             // Seletor segmentado (RF03), só com a arcada posicionada.
             var segment = Place(Rect(bar, "SeletorArcada"), new Vector2(0.5f, 1f), new Vector2(0f, -54f),
@@ -852,7 +986,7 @@ namespace OdontoAR.Editor
             return button;
         }
 
-        static Button BackButton(RectTransform parent)
+        static Button BackButton(RectTransform parent, string label = "Voltar")
         {
             var rect = Place(Rect(parent, "Voltar"), new Vector2(0f, 1f), new Vector2(12f, -6f), new Vector2(110f, 44f),
                 pivot: new Vector2(0f, 1f));
@@ -866,7 +1000,7 @@ namespace OdontoAR.Editor
             row.childControlWidth = row.childControlHeight = true;
             row.childForceExpandWidth = row.childForceExpandHeight = false;
             Size(Icon(rect, "chevL", 24f, OdontoARTheme.Accent).rectTransform, 24f, 24f);
-            Text(rect, "Voltar", kit.Regular, OdontoARTheme.Body, OdontoARTheme.Accent);
+            Text(rect, label, kit.Regular, OdontoARTheme.Body, OdontoARTheme.Accent);
             return button;
         }
 
