@@ -82,7 +82,10 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 - 🤖 Testes EditMode do logger (serialização, sessão interrompida).
 - **Aceite:** JSON exportado por AirDrop/Arquivos abre e contém os eventos esperados.
 
-### T10 — Oclusão com LiDAR
+### T10 — Oclusão com LiDAR ✅ (24/10)
+> Ligada já na T3 (`AROcclusionManager`, profundidade do ambiente "Best", preferindo o ambiente). Sem LiDAR
+> o ARKit não fornece profundidade e o gerenciador simplesmente não atua. Verificado no 16 Pro Max: a mão
+> cobre a arcada.
 - 🤖 `AROcclusionManager` com profundidade do ambiente quando suportado; desligado sem crash em aparelhos sem LiDAR.
 - **Aceite:** a mão passa na frente da arcada no 16 Pro Max.
 
