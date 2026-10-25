@@ -58,6 +58,7 @@ namespace OdontoAR.AR
         {
             EnhancedTouchSupport.Enable();
             Touch.onFingerUp += OnFingerUp;
+            MultiTouch.Track();
             holder.State.Changed += RefreshOutline;
             RefreshOutline();
         }
@@ -65,6 +66,7 @@ namespace OdontoAR.AR
         void OnDisable()
         {
             Touch.onFingerUp -= OnFingerUp;
+            MultiTouch.Untrack();
             holder.State.Changed -= RefreshOutline;
             EnhancedTouchSupport.Disable();
         }
@@ -80,6 +82,8 @@ namespace OdontoAR.AR
             var movement = (touch.screenPosition - touch.startScreenPosition).magnitude;
             if (duration > maxTapSeconds || movement > maxTapMovementPixels)
                 return;
+            if (MultiTouch.Overlaps(touch))
+                return; // parte de uma pinça ou do gesto de 3 dedos
             if (UIHitTest.IsOverUI(touch.startScreenPosition))
                 return;
 

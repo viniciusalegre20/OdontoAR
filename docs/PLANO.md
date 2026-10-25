@@ -91,7 +91,9 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 
 ## Semana 4 (16–22/11): testes
 
-### T11 — Verificação do sistema (§2.8 do artigo)
+### T11 — Verificação do sistema (§2.8 do artigo) — 🤖 pronto, 🧑 em execução
+> `docs/TESTES.md` segue a §2.8 (funcionais, interação, estabilidade × superfície × luz, FPS,
+> compatibilidade, RNFs, revisão do especialista, piloto). Contador de FPS: toque com 3 dedos.
 - 🤖 `docs/TESTES.md`: checklist RF01–RF10 e RNF01–RNF07 com passos e resultado esperado.
 - 🤖 Contador de FPS ativável por gesto escondido (3 dedos) para medição.
 - 🧑 Executar o checklist em 2 superfícies e 2 iluminações; anotar FPS; piloto com 2–3 colegas.

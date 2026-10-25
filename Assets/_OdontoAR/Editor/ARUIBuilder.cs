@@ -1,4 +1,5 @@
 using OdontoAR.AR;
+using OdontoAR.Diagnostics;
 using OdontoAR.Logging;
 using OdontoAR.Model;
 using OdontoAR.Theme;
@@ -72,6 +73,8 @@ namespace OdontoAR.Editor
             Set(router, "session", context.Session);
             Set(router, "holder", context.Holder);
             Set(router, "help", help);
+
+            BuildFrameRateOverlay(canvas);
 
             // Estado inicial no Editor; em execução o ScreenRouter decide.
             code.SetActive(false);
@@ -279,6 +282,31 @@ namespace OdontoAR.Editor
             Size((RectTransform)texts.transform, flexibleWidth: 1f);
             Text(texts.transform, title, kit.SemiBold, OdontoARTheme.Headline, OdontoARTheme.Ink);
             Text(texts.transform, detail, kit.Regular, OdontoARTheme.Footnote, OdontoARTheme.InkMuted);
+        }
+
+        // ---------- Contador de FPS (T11) ----------
+
+        /// <summary>Pílula com o FPS no canto superior esquerdo, por cima de tudo; liga com 3 dedos.</summary>
+        static void BuildFrameRateOverlay(RectTransform canvas)
+        {
+            var safe = Stretch(Rect(canvas, "Diagnostico"));
+            safe.gameObject.AddComponent<OdontoAR.UI.SafeArea>();
+
+            var pill = Place(Rect(safe, "ContadorFPS"), new Vector2(0f, 1f), new Vector2(12f, -56f), new Vector2(0f, 28f),
+                pivot: new Vector2(0f, 1f));
+            Img(pill, kit.Rounded(14f), OdontoARTheme.Glass, raycast: false);
+            var layout = pill.gameObject.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(12, 12, 0, 0);
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = layout.childControlHeight = true;
+            pill.gameObject.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var label = Text(pill, "-- FPS", kit.Mono, 13f, OdontoARTheme.Accent, TextAlignmentOptions.Center);
+            label.textWrappingMode = TextWrappingModes.NoWrap;
+            pill.gameObject.SetActive(false);
+
+            var logic = canvas.gameObject.AddComponent<FrameRateOverlay>();
+            Set(logic, "overlay", pill.gameObject);
+            Set(logic, "label", label);
         }
 
         // ---------- Tela 10: Registro de uso ----------

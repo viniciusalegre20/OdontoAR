@@ -58,6 +58,7 @@ namespace OdontoAR.AR
             TouchSimulation.Enable();
 #endif
             Touch.onFingerUp += OnFingerUp;
+            MultiTouch.Track();
             holder.State.Changed += ApplyPlacedState;
             ApplyPlacedState();
         }
@@ -65,6 +66,7 @@ namespace OdontoAR.AR
         void OnDisable()
         {
             Touch.onFingerUp -= OnFingerUp;
+            MultiTouch.Untrack();
             holder.State.Changed -= ApplyPlacedState;
 #if UNITY_EDITOR
             TouchSimulation.Disable();
@@ -131,6 +133,8 @@ namespace OdontoAR.AR
             if (duration > maxTapSeconds || movement > maxTapMovementPixels)
                 return;
 
+            if (MultiTouch.Overlaps(touch))
+                return; // parte de uma pinça ou do gesto de 3 dedos
             if (UIHitTest.IsOverUI(touch.startScreenPosition))
                 return;
 
