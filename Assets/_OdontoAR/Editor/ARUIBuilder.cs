@@ -74,7 +74,7 @@ namespace OdontoAR.Editor
             Set(router, "holder", context.Holder);
             Set(router, "help", help);
 
-            BuildFrameRateOverlay(canvas);
+            BuildFrameRateOverlay(canvas, context.Camera);
 
             // Estado inicial no Editor; em execução o ScreenRouter decide.
             code.SetActive(false);
@@ -286,8 +286,8 @@ namespace OdontoAR.Editor
 
         // ---------- Contador de FPS (T11) ----------
 
-        /// <summary>Pílula com o FPS no canto superior esquerdo, por cima de tudo; liga com 3 dedos.</summary>
-        static void BuildFrameRateOverlay(RectTransform canvas)
+        /// <summary>Pílula com o FPS no canto superior esquerdo, por cima de tudo; liga com 3 dedos (4 dedos: oclusão).</summary>
+        static void BuildFrameRateOverlay(RectTransform canvas, Camera camera)
         {
             var safe = Stretch(Rect(canvas, "Diagnostico"));
             safe.gameObject.AddComponent<OdontoAR.UI.SafeArea>();
@@ -307,6 +307,7 @@ namespace OdontoAR.Editor
             var logic = canvas.gameObject.AddComponent<FrameRateOverlay>();
             Set(logic, "overlay", pill.gameObject);
             Set(logic, "label", label);
+            Set(logic, "occlusion", camera.GetComponent<UnityEngine.XR.ARFoundation.AROcclusionManager>());
         }
 
         // ---------- Tela 10: Registro de uso ----------
