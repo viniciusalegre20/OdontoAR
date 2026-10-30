@@ -88,6 +88,6 @@ o que dá para mapear direto para FDI. Os nomes e a divisão parecem do atlas **
   núcleo motor do facial e nervo vestibulococlear (VIII), ~70 mil triângulos, mesmo espaço dos outros FBX.
   O antigo foi apagado.
 - [X] Decidir: polpa será modelada? → **Não.** A POC segue sem polpa; a 4ª camada passa a ser "Nervos".
-- [X] Confirmar a origem do modelo → Z-Anatomy; créditos em `docs/CREDITOS.md`.
+- [X] Confirmar a origem do modelo → Z-Anatomy; créditos em `docs/documents/CREDITOS.md`.
 - [X] Confirmar a remoção dos pacotes não usados na T1.
 - [X] A pasta `../OdontoAr_temp` (sobrou só `Logs/` e `UserSettings/`) pode ser apagada.

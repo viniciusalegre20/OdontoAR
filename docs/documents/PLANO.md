@@ -8,14 +8,14 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 ### T0 — Criação do projeto (do zero) ✅ (23/10)
 > Não há protótipo WebGL: o projeto começa vazio, só com um modelo 3D básico da arcada.
 - 🧑 Entrar no Unity Hub (licença Personal ativa) e criar o projeto com o template **Universal 3D** (Unity 6000.6.4f1).
-- 🤖 Mover o projeto para a raiz do repositório, `git init`, `.gitignore`, estrutura `Assets/_OdontoAR/` e `docs/AUDITORIA.md` (estado inicial: versão, pacotes, modelo 3D disponível e sua hierarquia).
+- 🤖 Mover o projeto para a raiz do repositório, `git init`, `.gitignore`, estrutura `Assets/_OdontoAR/` e `docs/documents/AUDITORIA.md` (estado inicial: versão, pacotes, modelo 3D disponível e sua hierarquia).
 - 🧑 Copiar o modelo 3D básico para `Assets/_OdontoAR/Models/`.
-- **Aceite:** projeto abre no Unity sem erros; `docs/AUDITORIA.md` revisado pelo humano.
+- **Aceite:** projeto abre no Unity sem erros; `docs/documents/AUDITORIA.md` revisado pelo humano.
 
 ### T1 — Pacotes e configuração iOS ✅ (24/10)
 - 🤖 Adicionar ao `Packages/manifest.json`: AR Foundation, Apple ARKit XR Plugin, Input System, TextMeshPro (versões compatíveis com o Unity instalado).
 - 🤖 Script `Editor/ProjectSetup.cs` (menu `OdontoAR/Configurar projeto iOS`): plataforma iOS, ARKit ligado no XR Plug-in Management, Camera Usage Description em português, "Requires ARKit", iOS mínimo compatível, Active Input Handling, nome do produto "OdontoAR", empresa "Aura Works" e bundle id.
-- 🤖 Remover pacotes do template que não usamos (ver `docs/AUDITORIA.md`).
+- 🤖 Remover pacotes do template que não usamos (ver `docs/documents/AUDITORIA.md`).
 - 🧑 Rodar o menu e conferir.
 - **Aceite:** projeto abre sem erros com o alvo iOS.
 
@@ -42,7 +42,7 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 ## Semana 2 (02–08/11): camadas e seleção
 
 ### T5 — Convenção do modelo + validador ✅ (24/10)
-> Modelo recebido em 24/10 (ver `docs/AUDITORIA.md`): 5 FBX do atlas Z-Anatomy, nomes em inglês
+> Modelo recebido em 24/10 (ver `docs/documents/AUDITORIA.md`): 5 FBX do atlas Z-Anatomy, nomes em inglês
 > (`Upper first molar tooth.l`), coroa e raiz como materiais (`Teeth`, `Teeth-roots`) dentro da malha
 > de cada dente, **sem polpa** (decisão: POC segue sem polpa) e sem terceiros molares.
 - 🤖 Mapear os nomes atuais para FDI (`Upper`/`Lower` + tipo + `.l`/`.r` → código), sem renomear no Blender.
@@ -68,7 +68,7 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 > do design system rasterizados em `UI/Icons`, Inter/JetBrains Mono no lugar da SF Pro (licença), vidro sem
 > desfoque. Também: ícone do app e tela de abertura do iOS com o símbolo, sem splash do Unity, e permissão
 > de câmera lida do iOS por plugin nativo. Prévias das telas: menu `OdontoAR/Gerar prévias da interface`.
-- 🤖 Telas 1–3 (abertura, código do participante, permissão de câmera), 4–5 (coaching de superfície usando o estado do ARPlaneManager), 6–7 (barra superior, seletor, painel de camadas recolhível com `CamadaChip`), 9 (ajuda, com a seção **Créditos** do `docs/CREDITOS.md`).
+- 🤖 Telas 1–3 (abertura, código do participante, permissão de câmera), 4–5 (coaching de superfície usando o estado do ARPlaneManager), 6–7 (barra superior, seletor, painel de camadas recolhível com `CamadaChip`), 9 (ajuda, com a seção **Créditos** do `docs/documents/CREDITOS.md`).
 - 🤖 Navegação simples por um `ScreenRouter`; centro da tela livre nas telas de RA.
 - ✅ Ícones gerados a partir do design system em `Assets/_OdontoAR/UI/Icons` (não precisou exportar).
 - **Aceite:** fluxo completo da abertura até a RA sem dead ends; textos em pt-BR.
@@ -92,9 +92,9 @@ Legenda: 🤖 Claude Code faz · 🧑 humano faz no Unity/Xcode/iPhone.
 ## Semana 4 (16–22/11): testes
 
 ### T11 — Verificação do sistema (§2.8 do artigo) — 🤖 pronto, 🧑 em execução
-> `docs/TESTES.md` segue a §2.8 (funcionais, interação, estabilidade × superfície × luz, FPS,
+> `docs/documents/TESTES.md` segue a §2.8 (funcionais, interação, estabilidade × superfície × luz, FPS,
 > compatibilidade, RNFs, revisão do especialista, piloto). Contador de FPS: toque com 3 dedos.
-- 🤖 `docs/TESTES.md`: checklist RF01–RF10 e RNF01–RNF07 com passos e resultado esperado.
+- 🤖 `docs/documents/TESTES.md`: checklist RF01–RF10 e RNF01–RNF07 com passos e resultado esperado.
 - 🤖 Contador de FPS ativável por gesto escondido (3 dedos) para medição.
 - 🧑 Executar o checklist em 2 superfícies e 2 iluminações; anotar FPS; piloto com 2–3 colegas.
 - 🤖 Corrigir o que falhar.

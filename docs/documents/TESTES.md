@@ -33,7 +33,7 @@ referência. Não substitui a execução do checklist.
 | RF10 | Registrar o uso (tempo de sessão, camadas e estruturas) | Usar o app 2 min; abrir o Registro (relógio); "Exportar registro (JSON)" por AirDrop | Resumo com tempo, sessões e camadas; JSON abre e contém sessões, camadas e seleções com os tempos | OK | | |
 
 ¹ O Quadro 1 do artigo cita **polpa e osso alveolar**. A POC usa o modelo do Z-Anatomy, que não tem
-polpa; a 4ª camada é **nervos** (decisão registrada em `docs/AUDITORIA.md`). Atualizar o artigo.
+polpa; a 4ª camada é **nervos** (decisão registrada em `docs/documents/AUDITORIA.md`). Atualizar o artigo.
 
 ## 2. Testes de interação
 

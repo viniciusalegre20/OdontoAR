@@ -2,7 +2,7 @@
 
 App iOS de Realidade Aumentada para estudantes de Odontologia: a arcada dentária 3D aparece sobre a mesa e o aluno explora coroa, raiz, osso alveolar e nervos (a POC não tem polpa: o modelo não inclui). Trabalho da UPX (Facens), equipe Aura Works. Prazo da POC: **fim de novembro de 2026**.
 
-O plano de implementação está em `docs/PLANO.md`. Trabalhe **uma tarefa por vez** (T0, T1...) e só marque como concluída quando os critérios de aceite forem atendidos.
+O plano de implementação está em `docs/documents/PLANO.md`. Trabalhe **uma tarefa por vez** (T0, T1...) e só marque como concluída quando os critérios de aceite forem atendidos.
 
 ## Stack
 - Unity 6 (6000.6.4f1), URP, C#
@@ -29,7 +29,7 @@ Assemblies: `OdontoAR` (Scripts/), `OdontoAR.Editor` (Editor/), `OdontoAR.Tests.
 - Todo texto visível ao usuário em **português do Brasil**, com nomenclatura anatômica e **notação FDI** ("Primeiro molar inferior esquerdo — 36").
 - Cores e opacidades **somente** via `OdontoARTheme`. Nunca escreva hex solto.
 - Estado do modelo (arcada, abertura, escala, camadas, seleção) fica em uma classe de estado pura (sem MonoBehaviour), testável em EditMode. MonoBehaviours só leem/escrevem esse estado.
-- Modelos 3D vêm do Z-Anatomy (CC BY-SA 4.0): a atribuição em `docs/CREDITOS.md` deve aparecer no app e no artigo.
+- Modelos 3D vêm do Z-Anatomy (CC BY-SA 4.0): a atribuição em `docs/documents/CREDITOS.md` deve aparecer no app e no artigo.
 - Nada de rede: o app funciona offline (RNF05). Registros sem dados pessoais, só o código do participante (RNF07).
 - Não edite arquivos `.unity`, `.prefab` ou `ProjectSettings/*.asset` à mão. Para mudar cena ou configuração, escreva um script de Editor (menu `OdontoAR/...`) e peça para o humano executá-lo.
 - Não há protótipo prévio: o projeto foi criado do zero (T0). Para testar no Editor sem aparelho, controles de mouse ficam em `#if UNITY_EDITOR` ou num componente que possa ser desativado.

@@ -82,7 +82,7 @@ passando. Falta a parte humana da verificação (T11) e a entrega (semana 5).
   compartilhamento do iOS (`OdontoARShare.mm`). Verificado com exportação por AirDrop.
 
 ### Verificação (T11)
-- `docs/TESTES.md` segue a §2.8 do artigo: RF01–RF10, interação, estabilidade (superfície × luz),
+- `docs/documents/TESTES.md` segue a §2.8 do artigo: RF01–RF10, interação, estabilidade (superfície × luz),
   desempenho, compatibilidade, RNF01–RNF07, revisão do especialista e piloto.
 - Contador de FPS escondido (toque com 3 dedos); FPS e eventos de rastreamento também saem no log.
 - Desempenho medido: 60 FPS médio com todas as camadas, pior quadro ~31 FPS (meta ≥ 30).
@@ -115,10 +115,10 @@ passando. Falta a parte humana da verificação (T11) e a entrega (semana 5).
 ## 5. Próximos passos
 
 ### T11 — verificação (🧑, semana 4: 16–22/11)
-1. Preencher `docs/TESTES.md` no iPhone 16 Pro Max, seções 1–6.
+1. Preencher `docs/documents/TESTES.md` no iPhone 16 Pro Max, seções 1–6.
 2. **Estabilidade:** 2 superfícies (lisa e com textura) × 2 iluminações (comum e pouca luz): tempo até
    detectar, deriva após uma volta na mesa, se a arcada fica presa (confirma a correção da T3).
-3. **2º aparelho**, de preferência sem LiDAR (instalação em `docs/INSTALACAO.md`).
+3. **2º aparelho**, de preferência sem LiDAR (instalação em `docs/documents/INSTALACAO.md`).
 4. **Revisão do especialista** (seção 7, RNF06): dentes, nomes FDI, coroa/raiz, osso, nervos, abertura.
 5. **Piloto** com 2–3 colegas (seção 8), sem explicar o app, e exportar os JSONs.
 6. 🤖 Corrigir o que falhar e registrar na seção 9.
