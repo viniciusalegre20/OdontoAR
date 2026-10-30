@@ -639,7 +639,13 @@ Ainda não testado em iPhone sem LiDAR nem em Android; não declaramos compatibi
 - Prévias das telas: seção 21 e pasta [`docs/images/`](docs/images/).
 - Modelo 3D renderizado: [`docs/images/modelo-3d.png`](docs/images/modelo-3d.png).
 - Testes automatizados: 126/126 (seção 22.1).
-- Gravação de tela no iPhone 16 Pro Max: ⚠️ ADICIONAR `docs/images/demo-iphone.png` (ou GIF) e o link do vídeo.
+- Captura de tela no iPhone 16 Pro Max (iOS 27.0.1), abaixo.
+
+<img src="docs/images/demo-iphone.png" width="320" alt="OdontoAR em execução no iPhone 16 Pro Max">
+
+*Arcada posicionada sobre uma superfície real, com as duas arcadas e as quatro camadas visíveis: coroa e
+raiz translúcidas, osso alveolar e nervos (em azul). No canto superior, o contador de diagnóstico
+(toque com 3 dedos) mostra 60 FPS, pior quadro 60 e oclusão com LiDAR ligada.*
 
 ---
 
@@ -661,20 +667,21 @@ Uma tarefa por vez, com critérios de aceite em [`PLANO.md`](docs/documents/PLAN
 
 | Atividade | Responsável | Status |
 |---|---|---|
+| Organização das sprints, backlog e acompanhamento do cronograma | Guilherme Dias | 🚧 |
 | T0 — Projeto Unity 6 (URP) do zero e auditoria | Vinicius Alegre de Oliveira | ✅ |
-| T1 — AR Foundation + ARKit e configuração iOS por script | Vinicius Alegre de Oliveira | ✅ |
+| T1 — AR Foundation + ARKit e configuração iOS por script | Vinicius Alegre de Oliveira, Leonardo Vergilio Luz | ✅ |
 | T2 — Build iOS por linha de comando | Vinicius Alegre de Oliveira | ✅ |
-| T3 — Cena de RA: plano, retículo, posicionar, gestos, sombra | Vinicius Alegre de Oliveira | ✅ |
-| T4 — `ModelState`, seletor de arcada e abertura | Vinicius Alegre de Oliveira | ✅ |
-| T5 — Mapeamento FDI, colliders e validador do modelo | Vinicius Alegre de Oliveira | ✅ |
-| T6 — Camadas coroa, raiz, osso e nervos | Vinicius Alegre de Oliveira | ✅ |
-| T7 — Seleção por toque e cartão FDI | Vinicius Alegre de Oliveira | ✅ |
-| T8 — Interface do design system, ícone e tela de abertura | Vinicius Alegre de Oliveira | ✅ |
+| T3 — Cena de RA: plano, retículo, posicionar, gestos, sombra | Leonardo Vergilio Luz, Vinicius Alegre de Oliveira | ✅ |
+| T4 — `ModelState`, seletor de arcada e abertura | Leonardo Vergilio Luz | ✅ |
+| T5 — Mapeamento FDI, colliders e validador do modelo | Leonardo Vergilio Luz | ✅ |
+| T6 — Camadas coroa, raiz, osso e nervos | Leonardo Vergilio Luz | ✅ |
+| T7 — Seleção por toque e cartão FDI | Leonardo Vergilio Luz, Bruno Carvalho | ✅ |
+| T8 — Interface do design system, ícone e tela de abertura | Bruno Carvalho | ✅ |
 | T9 — Registro de uso e exportação | Vinicius Alegre de Oliveira | ✅ |
-| T10 — Oclusão com LiDAR | Vinicius Alegre de Oliveira | ✅ |
-| T11 — Verificação do sistema e estabilidade | Equipe | 🚧 |
-| Revisão do modelo por especialista | Equipe | ⬜ |
-| Vídeo demo, artigo e apresentação (23–30/11) | Equipe | ⬜ |
+| T10 — Oclusão com LiDAR | Leonardo Vergilio Luz | ✅ |
+| T11 — Verificação do sistema e estabilidade | Equipe (coordenação: Guilherme Dias) | 🚧 |
+| Revisão do modelo por especialista | Guilherme Dias | ⬜ |
+| Vídeo demo, artigo e apresentação (23–30/11) | Equipe (coordenação: Guilherme Dias) | ⬜ |
 
 ---
 
